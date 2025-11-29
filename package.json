@@ -2,7 +2,7 @@
   "name": "claude-studio",
   "displayName": "Claude Studio",
   "description": "AI-enhanced data science development with Claude",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "shandley",
   "engines": {
     "vscode": "^1.41.0"
@@ -165,7 +165,8 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "tsc -p ./ && npm run copy-fixtures",
+    "copy-fixtures": "copyfiles -u 3 \"src/test/fixtures/**/*\" out/test/fixtures/",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js",
@@ -180,6 +181,7 @@
     "@types/vscode": "^1.41.0",
     "@vscode/test-electron": "^2.5.2",
     "chai": "^6.2.1",
+    "copyfiles": "^2.4.1",
     "glob": "^13.0.0",
     "mocha": "^11.7.5",
     "typescript": "^5.8.3"

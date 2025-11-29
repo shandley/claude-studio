@@ -5,6 +5,18 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2024-11-29
+
+### Fixed
+- **CI Test Failures**: Test fixtures now properly copied to output directory during compilation
+  - Added `copyfiles` package for cross-platform file copying (Windows/macOS/Linux)
+  - Updated compile script to automatically copy test fixtures from `src/test/fixtures/` to `out/test/fixtures/`
+  - Resolves GitHub Actions test failures on all platforms
+
+### Changed
+- **Build Process**: Compilation now includes automatic fixture copying
+- **Dev Dependencies**: Added `copyfiles@^2.4.1` for reliable cross-platform builds
+
 ## [0.2.0] - 2024-11-29
 
 ### Added
