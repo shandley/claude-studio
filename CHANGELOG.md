@@ -5,6 +5,20 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2024-11-29
+
+### Added
+- **Statistical Test Recommendations**: Intelligent analysis-driven test suggestions
+  - Automatically analyzes data structure (variable types, counts) from CSV/TSV/JSON files
+  - Recommends appropriate statistical tests: t-test, ANOVA, correlation, chi-square, regression
+  - Provides test assumptions, when to use each test, and code examples in R and Python
+  - Context-aware recommendations based on: numeric vs categorical variables, sample size, research design
+  - New command: `claude-studio.recommendTests` (right-click on data files)
+- **StatisticalTestAnalyzer**: New class for analyzing data and generating test recommendations (`src/providers/statisticalAnalyzer.ts`)
+  - Covers descriptive statistics, normality testing, bivariate analysis (correlation, t-test, ANOVA, chi-square)
+  - Includes multivariate recommendations (multiple regression)
+  - Generates formatted prompts for Claude with complete test details
+
 ## [0.3.0] - 2024-11-29
 
 ### Added

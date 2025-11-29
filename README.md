@@ -3,7 +3,7 @@
 **AI-enhanced data science development with Claude Code integration**
 
 [![License](https://img.shields.io/badge/license-Elastic--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.3.0-green.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-0.4.0-green.svg)](package.json)
 [![Build](https://github.com/shandley/claude-studio/actions/workflows/build.yml/badge.svg)](https://github.com/shandley/claude-studio/actions/workflows/build.yml)
 
 Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science development workflow. It provides intelligent code assistance, data analysis, and documentation features specifically designed for researchers, data scientists, and analysts.
@@ -21,6 +21,11 @@ Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extensi
 - **CSV/TSV/JSON Parsing**: Automatic data structure detection and type inference
 - **Smart Context**: Extracts column names, data types, and statistics
 - **Data Suggestions**: Get AI-powered analysis recommendations for your datasets
+- **Statistical Test Recommendations**: Automatic analysis-driven test suggestions
+  - Recommends appropriate tests based on variable types (t-test, ANOVA, correlation, chi-square, regression)
+  - Provides test assumptions and when to use each test
+  - Includes R and Python code examples
+  - Context-aware based on your data structure
 
 ### 💻 **Code Intelligence**
 - **Explain Code**: Get detailed explanations of selected code with language context

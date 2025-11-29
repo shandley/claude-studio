@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { ClaudeManager } from '../claude/claudeManager';
 import { DataContextProvider } from '../providers/dataContext';
+import { StatisticalTestAnalyzer } from '../providers/statisticalAnalyzer';
 import { ErrorHandler } from '../utils/error';
 
 export class ClaudeCommands {
@@ -266,6 +267,54 @@ Please:
     }
 
     /**
+     * Recommend statistical tests based on data structure
+     */
+    async recommendStatisticalTests(uri?: vscode.Uri): Promise<void> {
+        try {
+            // Check if Claude is initialized
+            const initialized = await this.claudeManager.initialize();
+            if (!initialized) {
+                return;
+            }
+
+            // Get data context
+            let dataContext = null;
+            if (uri) {
+                dataContext = await this.dataProvider.getFileDataContext(uri);
+            } else {
+                dataContext = await this.dataProvider.getEditorDataContext();
+            }
+
+            if (!dataContext) {
+                vscode.window.showInformationMessage('No data file selected');
+                return;
+            }
+
+            if (!dataContext.columns || dataContext.columns.length === 0) {
+                vscode.window.showInformationMessage('Unable to analyze data structure');
+                return;
+            }
+
+            // Analyze data and generate recommendations
+            const recommendations = StatisticalTestAnalyzer.analyzeAndRecommend(dataContext);
+
+            if (recommendations.length === 0) {
+                vscode.window.showInformationMessage('No recommendations generated for this dataset');
+                return;
+            }
+
+            // Format recommendations as a Claude prompt
+            const prompt = StatisticalTestAnalyzer.formatRecommendationsForClaude(dataContext, recommendations);
+
+            // Send to Claude
+            await this.claudeManager.sendCommand(prompt);
+            vscode.window.showInformationMessage(`Analyzing ${dataContext.name} - ${recommendations.length} statistical tests recommended`);
+        } catch (error) {
+            ErrorHandler.handle(error, 'Recommend Statistical Tests');
+        }
+    }
+
+    /**
      * Register all commands
      */
     static registerCommands(
@@ -293,6 +342,11 @@ Please:
         // Register debug error command
         context.subscriptions.push(
             vscode.commands.registerCommand('claude-studio.debugError', () => commands.debugError())
+        );
+
+        // Register recommend statistical tests command
+        context.subscriptions.push(
+            vscode.commands.registerCommand('claude-studio.recommendTests', (uri?: vscode.Uri) => commands.recommendStatisticalTests(uri))
         );
     }
 }

@@ -2,7 +2,7 @@
   "name": "claude-studio",
   "displayName": "Claude Studio",
   "description": "AI-enhanced data science development with Claude",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "shandley",
   "engines": {
     "vscode": "^1.41.0"
@@ -77,6 +77,11 @@
         "command": "claude-studio.debugError",
         "title": "Claude Studio: Debug Error with Claude",
         "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.recommendTests",
+        "title": "Claude Studio: Recommend Statistical Tests",
+        "category": "Claude Studio"
       }
     ],
     "menus": {
@@ -110,6 +115,11 @@
         },
         {
           "command": "claude-studio.suggestAnalysis",
+          "group": "claude",
+          "when": "resourceExtname == .csv || resourceExtname == .tsv || resourceExtname == .json"
+        },
+        {
+          "command": "claude-studio.recommendTests",
           "group": "claude",
           "when": "resourceExtname == .csv || resourceExtname == .tsv || resourceExtname == .json"
         }
