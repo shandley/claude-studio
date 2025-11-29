@@ -1,0 +1,187 @@
+{
+  "name": "claude-studio",
+  "displayName": "Claude Studio",
+  "description": "AI-enhanced data science development with Claude",
+  "version": "0.2.0",
+  "publisher": "shandley",
+  "engines": {
+    "vscode": "^1.41.0"
+  },
+  "homepage": "https://github.com/shandley/claude-studio#readme",
+  "bugs": {
+    "url": "https://github.com/shandley/claude-studio/issues"
+  },
+  "categories": [
+    "AI",
+    "Data Science",
+    "Other"
+  ],
+  "keywords": [
+    "claude",
+    "ai",
+    "data science",
+    "positron"
+  ],
+  "license": "Elastic-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shandley/claude-studio"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "claude-studio.start",
+        "title": "Claude Studio: Start Claude Assistant",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.analyzeData",
+        "title": "Claude Studio: Analyze Data with Claude",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.configureApiKey",
+        "title": "Claude Studio: Configure API Key",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.stop",
+        "title": "Claude Studio: Stop Claude",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.install",
+        "title": "Claude Studio: Install Claude Code CLI",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.explainCode",
+        "title": "Claude Studio: Explain This Code",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.generateDocs",
+        "title": "Claude Studio: Generate Documentation",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.suggestAnalysis",
+        "title": "Claude Studio: Suggest Data Analysis",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.debugError",
+        "title": "Claude Studio: Debug Error with Claude",
+        "category": "Claude Studio"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "claude-studio.analyzeData",
+          "group": "claude",
+          "when": "resourceExtname == .csv || resourceExtname == .tsv || resourceExtname == .json || resourceExtname == .py || resourceExtname == .r || resourceExtname == .R || editorHasSelection"
+        },
+        {
+          "command": "claude-studio.explainCode",
+          "group": "claude",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "claude-studio.generateDocs",
+          "group": "claude",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "claude-studio.debugError",
+          "group": "claude",
+          "when": "editorTextFocus"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "claude-studio.analyzeData",
+          "group": "claude",
+          "when": "resourceExtname == .csv || resourceExtname == .tsv || resourceExtname == .json"
+        },
+        {
+          "command": "claude-studio.suggestAnalysis",
+          "group": "claude",
+          "when": "resourceExtname == .csv || resourceExtname == .tsv || resourceExtname == .json"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Claude Studio",
+      "properties": {
+        "claude-studio.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Anthropic API key for Claude (stored securely)",
+          "scope": "application"
+        },
+        "claude-studio.model": {
+          "type": "string",
+          "enum": [
+            "claude-3-opus",
+            "claude-3-sonnet"
+          ],
+          "default": "claude-3-sonnet",
+          "description": "Claude model to use"
+        },
+        "claude-studio.maxTokens": {
+          "type": "number",
+          "default": 4096,
+          "description": "Maximum tokens for Claude responses"
+        },
+        "claude-studio.temperature": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Temperature for Claude responses (0-1)"
+        },
+        "claude-studio.dataContextSize": {
+          "type": "number",
+          "default": 1000,
+          "description": "Maximum rows to send for data context"
+        },
+        "claude-studio.autoSuggest": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic suggestions"
+        },
+        "claude-studio.debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug logging"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "test-unit": "mocha --require ts-node/register src/test/suite/**/*.test.ts",
+    "package": "npx @vscode/vsce package"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.3",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.0.7",
+    "@types/vscode": "^1.41.0",
+    "@vscode/test-electron": "^2.5.2",
+    "chai": "^6.2.1",
+    "glob": "^13.0.0",
+    "mocha": "^11.7.5",
+    "typescript": "^5.8.3"
+  }
+}

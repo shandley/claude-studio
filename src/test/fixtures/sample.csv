@@ -1,0 +1,6 @@
+name,age,salary,join_date,active
+Alice,30,75000.50,2020-01-15,true
+Bob,25,65000.00,2021-03-20,true
+Charlie,35,85000.75,2019-06-10,false
+Diana,28,,2022-02-28,true
+Eve,32,72000.00,2020-11-05,true
