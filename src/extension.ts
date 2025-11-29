@@ -6,11 +6,13 @@ import { ErrorHandler } from './utils/error';
 import { ConfigManager } from './utils/config';
 import { DataContextProvider } from './providers/dataContext';
 import { ClaudeCommands } from './commands/index';
+import { StatusBarManager, ClaudeStatus } from './ui/statusBar';
 
 let claudeManager: ClaudeManager;
 let authManager: ClaudeAuthManager;
 let dataProvider: DataContextProvider;
 let outputChannel: vscode.OutputChannel;
+let statusBarManager: StatusBarManager;
 
 export async function activate(context: vscode.ExtensionContext) {
     console.log('Claude Studio extension is now active!');
@@ -23,6 +25,10 @@ export async function activate(context: vscode.ExtensionContext) {
     claudeManager = new ClaudeManager(context);
     authManager = new ClaudeAuthManager(context);
     dataProvider = new DataContextProvider(context);
+    statusBarManager = new StatusBarManager();
+
+    // Initialize status bar with current state
+    await updateStatusBar();
 
     // Register commands
     registerCommands(context);
@@ -61,7 +67,9 @@ function registerCommands(context: vscode.ExtensionContext): void {
     const startCommand = vscode.commands.registerCommand('claude-studio.start', async () => {
         try {
             await claudeManager.startClaude();
+            statusBarManager.updateStatus(ClaudeStatus.Active);
         } catch (error) {
+            statusBarManager.updateStatus(ClaudeStatus.Error, 'Failed to start Claude');
             ErrorHandler.handle(error, 'Start Claude');
         }
     });
@@ -123,10 +131,11 @@ function registerCommands(context: vscode.ExtensionContext): void {
 
     // Configure API key command
     const configureApiKeyCommand = vscode.commands.registerCommand(
-        'claude-studio.configureApiKey', 
+        'claude-studio.configureApiKey',
         async () => {
             try {
                 await authManager.configureApiKey();
+                await updateStatusBar();
             } catch (error) {
                 ErrorHandler.handle(error, 'Configure API Key');
             }
@@ -137,8 +146,10 @@ function registerCommands(context: vscode.ExtensionContext): void {
     const stopCommand = vscode.commands.registerCommand('claude-studio.stop', async () => {
         try {
             await claudeManager.stopClaude();
+            statusBarManager.updateStatus(ClaudeStatus.Idle);
             vscode.window.showInformationMessage('Claude Studio stopped');
         } catch (error) {
+            statusBarManager.updateStatus(ClaudeStatus.Error, 'Failed to stop Claude');
             ErrorHandler.handle(error, 'Stop Claude');
         }
     });
@@ -154,22 +165,112 @@ function registerCommands(context: vscode.ExtensionContext): void {
         );
     });
 
+    // Quick actions command (triggered by status bar click)
+    const quickActionsCommand = vscode.commands.registerCommand('claude-studio.showQuickActions', async () => {
+        const items: vscode.QuickPickItem[] = [];
+        const currentStatus = statusBarManager.getStatus();
+
+        // Build menu based on current status
+        if (currentStatus === ClaudeStatus.NotInstalled) {
+            items.push({ label: '$(cloud-download) Install Claude Code', description: 'Install Claude Code CLI globally' });
+        } else if (currentStatus === ClaudeStatus.NotConfigured) {
+            items.push({ label: '$(key) Configure API Key', description: 'Set up your Anthropic API key' });
+        } else if (currentStatus === ClaudeStatus.Idle) {
+            items.push({ label: '$(play) Start Claude', description: 'Start Claude terminal' });
+            items.push({ label: '$(key) Configure API Key', description: 'Update your API key' });
+        } else if (currentStatus === ClaudeStatus.Active) {
+            items.push({ label: '$(stop) Stop Claude', description: 'Stop Claude terminal' });
+            items.push({ label: '$(terminal) Show Terminal', description: 'Focus Claude terminal' });
+        } else if (currentStatus === ClaudeStatus.Error) {
+            items.push({ label: '$(refresh) Restart Claude', description: 'Stop and start Claude' });
+            items.push({ label: '$(key) Configure API Key', description: 'Update your API key' });
+        }
+
+        // Common actions
+        items.push({ label: '$(output) Show Output', description: 'Open Claude Studio output channel' });
+
+        const selection = await vscode.window.showQuickPick(items, {
+            placeHolder: 'Select a Claude action'
+        });
+
+        if (!selection) {
+            return;
+        }
+
+        // Execute selected action
+        if (selection.label.includes('Install')) {
+            await vscode.commands.executeCommand('claude-studio.install');
+        } else if (selection.label.includes('Configure API Key')) {
+            await vscode.commands.executeCommand('claude-studio.configureApiKey');
+        } else if (selection.label.includes('Start Claude')) {
+            await vscode.commands.executeCommand('claude-studio.start');
+        } else if (selection.label.includes('Stop Claude')) {
+            await vscode.commands.executeCommand('claude-studio.stop');
+        } else if (selection.label.includes('Show Terminal')) {
+            // TODO: Focus the Claude terminal
+            vscode.window.showInformationMessage('Please switch to the "Claude Studio" terminal');
+        } else if (selection.label.includes('Restart')) {
+            await vscode.commands.executeCommand('claude-studio.stop');
+            await new Promise(resolve => setTimeout(resolve, 500)); // Brief delay
+            await vscode.commands.executeCommand('claude-studio.start');
+        } else if (selection.label.includes('Show Output')) {
+            outputChannel.show();
+        }
+    });
+
     context.subscriptions.push(
         startCommand,
         analyzeCommand,
         configureApiKeyCommand,
         stopCommand,
-        installCommand
+        installCommand,
+        quickActionsCommand
     );
+}
+
+/**
+ * Update the status bar to reflect the current Claude state
+ */
+async function updateStatusBar(): Promise<void> {
+    try {
+        // Check if Claude is installed
+        const spawn = require('child_process').spawn;
+        const isInstalled = await new Promise<boolean>((resolve) => {
+            const checkProcess = spawn('which', ['claude']);
+            checkProcess.on('close', (code: number) => resolve(code === 0));
+            checkProcess.on('error', () => resolve(false));
+        });
+
+        if (!isInstalled) {
+            statusBarManager.updateStatus(ClaudeStatus.NotInstalled);
+            return;
+        }
+
+        // Check if API key is configured
+        const apiKey = await authManager.getApiKey();
+        if (!apiKey) {
+            statusBarManager.updateStatus(ClaudeStatus.NotConfigured);
+            return;
+        }
+
+        // If we get here, Claude is installed and configured but not running
+        statusBarManager.updateStatus(ClaudeStatus.Idle);
+    } catch (error) {
+        statusBarManager.updateStatus(ClaudeStatus.Error, 'Failed to check Claude status');
+    }
 }
 
 export function deactivate() {
     console.log('Claude Studio extension deactivated');
-    
+
     if (claudeManager) {
         claudeManager.dispose();
     }
-    
+
+    if (statusBarManager) {
+        statusBarManager.dispose();
+    }
+
     if (outputChannel) {
         outputChannel.dispose();
     }

@@ -5,6 +5,24 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2024-11-29
+
+### Added
+- **Status Bar Integration**: Interactive status bar item showing Claude's current state
+  - Visual indicators for different states: Not Installed, Not Configured, Idle, Active, Error
+  - Color-coded icons for quick status recognition
+  - Click to access quick actions menu with context-sensitive options
+  - Real-time status updates as Claude state changes
+  - Quick access to: Start/Stop Claude, Configure API Key, Show Output, Restart Claude
+- **StatusBarManager**: New class for managing status bar lifecycle and state (`src/ui/statusBar.ts`)
+- **ClaudeStatus Enum**: Five states to track Claude's lifecycle
+- **Quick Actions Command**: `claude-studio.showQuickActions` for status bar click handler
+
+### Changed
+- Extension activation now initializes status bar and checks Claude installation state
+- All command handlers now update status bar after execution
+- Improved error handling with status bar feedback
+
 ## [0.2.1] - 2024-11-29
 
 ### Changed
@@ -114,11 +132,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Future Releases
 
-### [0.3.0] - Planned (Phase 3: Enhanced UI)
-- Webview-based Claude panel (optional)
-- Status bar integration
-- Inline suggestions
-- Message history UI
+### [0.3.0] - Planned (Phase 3: Enhanced Features)
+- Status bar integration (status indicators, quick actions)
+- Inline code suggestions
+- Enhanced terminal integration (formatting, history)
 
 ### [0.4.0] - Planned (Phase 4: Data Science Features)
 - Statistical test recommendations

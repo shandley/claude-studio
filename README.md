@@ -3,7 +3,7 @@
 **AI-enhanced data science development with Claude Code integration**
 
 [![License](https://img.shields.io/badge/license-Elastic--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.2.1-green.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-0.3.0-green.svg)](package.json)
 [![Build](https://github.com/shandley/claude-studio/actions/workflows/build.yml/badge.svg)](https://github.com/shandley/claude-studio/actions/workflows/build.yml)
 
 Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science development workflow. It provides intelligent code assistance, data analysis, and documentation features specifically designed for researchers, data scientists, and analysts.
@@ -27,6 +27,12 @@ Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extensi
 - **Generate Documentation**: Create Python docstrings, R Roxygen2, or JSDoc documentation
 - **Debug Assistance**: Analyze errors with surrounding code context
 - **Language-Aware**: Automatically detects Python, R, and JavaScript/TypeScript
+
+### 📊 **Status Bar Integration**
+- **Visual Status Indicator**: See Claude's state at a glance (Not Installed, Not Configured, Idle, Active, Error)
+- **Quick Actions Menu**: Click status bar for context-sensitive actions (Start/Stop Claude, Configure API Key, Show Output)
+- **Real-time Updates**: Status automatically updates as Claude state changes
+- **Color-Coded Icons**: Easy visual feedback with VS Code codicons
 
 ### 🎯 **Context Menu Integration**
 - Right-click on code → Explain, Document, or Debug

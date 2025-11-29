@@ -5,12 +5,12 @@
 Claude Studio is a standalone VS Code/Positron extension that integrates Claude Code CLI into data science workflows. It provides intelligent code assistance, data file analysis, and documentation generation specifically for researchers and data scientists.
 
 **Repository**: https://github.com/shandley/claude-studio
-**Current Version**: v0.2.1
+**Current Version**: v0.3.0
 **License**: Elastic License 2.0
 
 ## Current Status
 
-**Completed (Phase 1-2)**:
+**Completed (Phase 1-3)**:
 - Core Claude Code CLI integration via terminal
 - Secure API key management (VS Code globalState)
 - Data file parsing (CSV/TSV/JSON) with type inference
@@ -19,12 +19,11 @@ Claude Studio is a standalone VS Code/Positron extension that integrates Claude 
 - Error debugging with language server integration
 - Comprehensive test suite (45 tests, 100% DataContextProvider coverage)
 - CI/CD automation (build validation, automated releases)
+- **Status bar integration** (interactive status indicator with quick actions)
 
-**Next Phase (Phase 3 - Enhanced UI)**:
-- Webview-based Claude panel (optional UI)
-- Status bar integration
-- Inline suggestions
-- Message history viewer
+**Next Phase (Phase 3 - Remaining Features)**:
+- Inline code suggestions
+- Enhanced terminal integration
 
 ## Architecture
 
@@ -262,17 +261,19 @@ Users can customize via Settings → Extensions → Claude Studio:
 
 ## Next Development Priorities
 
-**Phase 3: Enhanced UI**:
-1. Create webview-based Claude panel
-   - Chat interface with syntax highlighting
-   - Copy/insert code functionality
-   - Conversation history
-2. Add status bar integration
-   - Show Claude status
+**Phase 3: Enhanced Features**:
+1. Add status bar integration
+   - Show Claude status (active/idle/error)
    - Quick access to commands
-3. Implement inline suggestions
+   - API usage indicators
+2. Implement inline suggestions
    - Code completion integration
    - Contextual suggestions
+   - Smart triggering based on context
+3. Enhanced terminal integration
+   - Better output formatting
+   - Command history navigation
+   - Response highlighting
 
 **Phase 4: Data Science Features**:
 1. Statistical test recommendations

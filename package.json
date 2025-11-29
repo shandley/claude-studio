@@ -2,7 +2,7 @@
   "name": "claude-studio",
   "displayName": "Claude Studio",
   "description": "AI-enhanced data science development with Claude",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "publisher": "shandley",
   "engines": {
     "vscode": "^1.41.0"
