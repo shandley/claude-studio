@@ -3,8 +3,8 @@
 **AI-enhanced data science development with Claude Code integration**
 
 [![License](https://img.shields.io/badge/license-Elastic--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.2.0-green.svg)](package.json)
-[![Tests](https://img.shields.io/badge/tests-45%20passing-success.svg)](src/test)
+[![Version](https://img.shields.io/badge/version-0.2.1-green.svg)](package.json)
+[![Build](https://github.com/shandley/claude-studio/actions/workflows/build.yml/badge.svg)](https://github.com/shandley/claude-studio/actions/workflows/build.yml)
 
 Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science development workflow. It provides intelligent code assistance, data analysis, and documentation features specifically designed for researchers, data scientists, and analysts.
 
