@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **CI Test Failures**: Test fixtures now properly copied to output directory during compilation
-  - Added `copyfiles` package for cross-platform file copying (Windows/macOS/Linux)
+  - Created Node.js script (`scripts/copy-fixtures.js`) for reliable cross-platform file copying
   - Updated compile script to automatically copy test fixtures from `src/test/fixtures/` to `out/test/fixtures/`
-  - Resolves GitHub Actions test failures on all platforms
+  - Resolves GitHub Actions test failures on all platforms (Windows/macOS/Linux)
 
 ### Changed
-- **Build Process**: Compilation now includes automatic fixture copying
-- **Dev Dependencies**: Added `copyfiles@^2.4.1` for reliable cross-platform builds
+- **Build Process**: Compilation now includes automatic fixture copying using native Node.js fs module
+- **GitHub Actions**: Added `fail-fast: false` to test matrix to see all platform results
+- **GitHub Actions**: Added verification step to debug fixture copying in CI
 
 ## [0.2.0] - 2024-11-29
 
