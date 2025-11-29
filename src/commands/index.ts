@@ -364,6 +364,141 @@ Please:
     }
 
     /**
+     * Improve existing plot code
+     */
+    async improvePlot(): Promise<void> {
+        try {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                vscode.window.showInformationMessage('No active editor found');
+                return;
+            }
+
+            // Check if Claude is initialized
+            const initialized = await this.claudeManager.initialize();
+            if (!initialized) {
+                return;
+            }
+
+            // Get selected text
+            const selection = editor.selection;
+            const selectedText = editor.document.getText(selection);
+
+            if (!selectedText.trim()) {
+                vscode.window.showInformationMessage('Please select plotting code to improve');
+                return;
+            }
+
+            // Detect language and plotting library
+            const languageId = editor.document.languageId;
+            const plottingContext = this.detectPlottingLibrary(selectedText, languageId);
+
+            if (!plottingContext.isPlotCode) {
+                const proceed = await vscode.window.showWarningMessage(
+                    'Selected code does not appear to contain plotting functions. Continue anyway?',
+                    'Yes', 'No'
+                );
+                if (proceed !== 'Yes') {
+                    return;
+                }
+            }
+
+            // Build comprehensive improvement prompt
+            const prompt = `Please analyze and improve this ${plottingContext.library || languageId} plotting code:
+
+\`\`\`${languageId}
+${selectedText}
+\`\`\`
+
+Provide detailed improvement suggestions focusing on:
+
+**1. Visual Design & Aesthetics**
+- Color schemes (consider colorblind-friendly palettes)
+- Theme and styling
+- Font sizes and readability
+- Aspect ratio and figure size
+
+**2. Clarity & Communication**
+- Axis labels and titles (clear, informative)
+- Legend placement and formatting
+- Grid lines and reference lines
+- Annotations and text placement
+
+**3. Data Presentation**
+- Appropriate chart type for the data
+- Statistical annotations (if applicable)
+- Error bars or confidence intervals
+- Highlighting important patterns
+
+**4. Publication Quality**
+- High-resolution output settings
+- Professional theme
+- Consistent styling
+- Accessibility considerations
+
+**5. Code Best Practices**
+- Clean, readable code structure
+- Efficient plotting approach
+- Commented code for key decisions
+- Reusable/modular design
+
+Please provide:
+1. A brief analysis of the current plot
+2. Specific improvement recommendations
+3. Complete improved code with explanations
+4. Any additional suggestions for exploration
+
+Language context: ${languageId}
+${plottingContext.library ? `Plotting library: ${plottingContext.library}` : ''}`;
+
+            // Send to Claude
+            await this.claudeManager.sendCommand(prompt);
+            vscode.window.showInformationMessage('Analyzing plot code with Claude...');
+        } catch (error) {
+            ErrorHandler.handle(error, 'Improve Plot');
+        }
+    }
+
+    /**
+     * Detect plotting library from code
+     */
+    private detectPlottingLibrary(code: string, languageId: string): { isPlotCode: boolean; library?: string } {
+        const lowerCode = code.toLowerCase();
+
+        // R plotting libraries
+        if (languageId === 'r') {
+            if (lowerCode.includes('ggplot') || lowerCode.includes('geom_')) {
+                return { isPlotCode: true, library: 'ggplot2' };
+            }
+            if (lowerCode.includes('plot(') || lowerCode.includes('hist(') ||
+                lowerCode.includes('boxplot(') || lowerCode.includes('barplot(')) {
+                return { isPlotCode: true, library: 'base R graphics' };
+            }
+            if (lowerCode.includes('lattice') || lowerCode.includes('xyplot')) {
+                return { isPlotCode: true, library: 'lattice' };
+            }
+        }
+
+        // Python plotting libraries
+        if (languageId === 'python') {
+            if (lowerCode.includes('plt.') || lowerCode.includes('matplotlib')) {
+                return { isPlotCode: true, library: 'matplotlib' };
+            }
+            if (lowerCode.includes('sns.') || lowerCode.includes('seaborn')) {
+                return { isPlotCode: true, library: 'seaborn' };
+            }
+            if (lowerCode.includes('plotly') || lowerCode.includes('go.')) {
+                return { isPlotCode: true, library: 'plotly' };
+            }
+            if (lowerCode.includes('px.')) {
+                return { isPlotCode: true, library: 'plotly express' };
+            }
+        }
+
+        return { isPlotCode: false };
+    }
+
+    /**
      * Register all commands
      */
     static registerCommands(
@@ -401,6 +536,11 @@ Please:
         // Register generate visualizations command
         context.subscriptions.push(
             vscode.commands.registerCommand('claude-studio.generateVisualizations', (uri?: vscode.Uri) => commands.generateVisualizations(uri))
+        );
+
+        // Register improve plot command
+        context.subscriptions.push(
+            vscode.commands.registerCommand('claude-studio.improvePlot', () => commands.improvePlot())
         );
     }
 }

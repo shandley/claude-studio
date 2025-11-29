@@ -2,7 +2,7 @@
   "name": "claude-studio",
   "displayName": "Claude Studio",
   "description": "AI-enhanced data science development with Claude",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "publisher": "shandley",
   "engines": {
     "vscode": "^1.41.0"
@@ -87,6 +87,11 @@
         "command": "claude-studio.generateVisualizations",
         "title": "Claude Studio: Generate Visualization Code",
         "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.improvePlot",
+        "title": "Claude Studio: Improve This Plot",
+        "category": "Claude Studio"
       }
     ],
     "menus": {
@@ -110,6 +115,11 @@
           "command": "claude-studio.debugError",
           "group": "claude",
           "when": "editorTextFocus"
+        },
+        {
+          "command": "claude-studio.improvePlot",
+          "group": "claude",
+          "when": "editorHasSelection"
         }
       ],
       "explorer/context": [

@@ -5,6 +5,18 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2024-11-29
+
+### Added
+- **Plot Improvement Suggestions**: Interactive code-based plot enhancement
+  - Select any plotting code (ggplot2, matplotlib, seaborn, base R, plotly) and get AI-powered improvement suggestions
+  - Detects plotting library automatically (ggplot2, matplotlib, seaborn, plotly, base R graphics, lattice)
+  - Comprehensive analysis focusing on: visual design, clarity, data presentation, publication quality, code best practices
+  - Provides specific recommendations and complete improved code with explanations
+  - New command: `claude-studio.improvePlot` (right-click on selected plot code)
+  - Works with selected code in editor - universal approach that works in VS Code and Positron
+  - Smart detection warns if selected code doesn't appear to be plotting code (optional bypass)
+
 ## [0.5.0] - 2024-11-29
 
 ### Added
