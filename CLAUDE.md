@@ -1,255 +1,300 @@
-# Claude Studio - AI-Enhanced Data Science IDE
+# Claude Studio Extension
 
 ## Project Overview
-Claude Studio is a Positron IDE extension that integrates Claude Code directly into the data science development environment. This project transforms Positron into an AI-native IDE specifically designed for researchers, data scientists, and analysts.
 
-## Current Development Status
-**Phase**: Phase 2 - Core Features Implementation
-**Status**: Phase 1 complete, Phase 2 features implemented
-**Timeline**: Week 2 of 5-week development cycle
-**Completed**: 
-- ✅ Phase 1: Basic Claude integration and terminal management
-- ✅ Phase 2: Core data science commands and context providers
-**Next Steps**: Test Phase 2 features, then begin Phase 3 (Enhanced UI)
+Claude Studio is a standalone VS Code/Positron extension that integrates Claude Code CLI into data science workflows. It provides intelligent code assistance, data file analysis, and documentation generation specifically for researchers and data scientists.
 
-## Quick Start for AI Development
+**Repository**: https://github.com/shandley/claude-studio
+**Current Version**: v0.2.1
+**License**: Elastic License 2.0
 
-### Understanding the Codebase
-This is a fork of Positron (https://github.com/posit-dev/positron), which itself is built on VS Code. The key directories are:
-- `/extensions/` - Where our Claude Studio extension will live
-- `/src/vs/workbench/` - Positron's workbench components we'll integrate with
-- `/src/vs/platform/` - Core platform services we'll utilize
+## Current Status
 
-### Development Environment Setup
-```bash
-# Clone the repository
-git clone https://github.com/shandley/claude-studio.git
-cd claude-studio
+**Completed (Phase 1-2)**:
+- Core Claude Code CLI integration via terminal
+- Secure API key management (VS Code globalState)
+- Data file parsing (CSV/TSV/JSON) with type inference
+- Code explanation and documentation generation
+- Language-aware features (Python, R, JavaScript/TypeScript)
+- Error debugging with language server integration
+- Comprehensive test suite (45 tests, 100% DataContextProvider coverage)
+- CI/CD automation (build validation, automated releases)
 
-# Install dependencies
-yarn install
+**Next Phase (Phase 3 - Enhanced UI)**:
+- Webview-based Claude panel (optional UI)
+- Status bar integration
+- Inline suggestions
+- Message history viewer
 
-# Create extension directory
-mkdir -p extensions/claude-studio
-cd extensions/claude-studio
-
-# Initialize extension
-npm init -y
-npm install -D typescript @types/vscode @types/node
-```
-
-### Key Integration Points
-1. **Terminal Service**: Access via `ITerminalService` for Claude Code execution
-2. **Data Viewer**: Hook into Positron's data viewing capabilities
-3. **Editor Actions**: Add context menu items and code actions
-4. **Webview API**: Create Claude chat interface
-5. **Configuration**: Use VS Code's configuration API for settings
-
-## Architecture Decisions
-
-### Why Extension-Based Approach?
-- **Maintainability**: Independent versioning and updates
-- **Distribution**: Easy installation via marketplace
-- **Development Speed**: 5 weeks vs 8+ weeks for core integration
-- **Risk Mitigation**: No need to maintain Positron fork long-term
+## Architecture
 
 ### Core Components
-1. **ClaudeManager**: Manages Claude Code process lifecycle
-2. **DataContextProvider**: Extracts context from data frames and visualizations
-3. **ClaudePanel**: Webview-based chat interface
-4. **CommandRegistry**: All Claude-related commands
 
-### Integration Strategy
-- Use subprocess for Claude Code CLI execution
-- Leverage VS Code's extension APIs exclusively
-- Maintain compatibility with future Positron updates
-- Focus on data science-specific features
+```
+src/
+├── extension.ts              # Activation, command registration
+├── claude/
+│   ├── claudeManager.ts      # Process lifecycle management
+│   ├── claudeAPI.ts          # Subprocess communication
+│   └── claudeAuth.ts         # Secure API key storage
+├── providers/
+│   └── dataContext.ts        # CSV/TSV/JSON parsing, type inference
+├── commands/
+│   └── index.ts              # Command handlers
+└── utils/
+    ├── config.ts             # Configuration management
+    └── error.ts              # Error handling
+```
 
-## Development Guidelines
+### Key Design Principles
 
-### Code Standards
-- **Language**: TypeScript with strict mode enabled
-- **Style**: ESLint with Positron's configuration
-- **Testing**: Jest for unit tests, VS Code test runner for integration
-- **Documentation**: TSDoc for all public APIs
+- **VS Code API Only**: No Positron-specific APIs, works in both VS Code and Positron
+- **Terminal-based**: Claude Code runs in dedicated terminal with environment variables
+- **Asynchronous**: All operations non-blocking
+- **Fail Gracefully**: Never crash the IDE
+- **Privacy First**: API keys in secure storage, data sampling happens locally
 
-### Key Principles
-1. **Non-blocking**: All Claude operations must be asynchronous
-2. **Fail Gracefully**: Never crash the IDE, always provide fallbacks
-3. **Privacy First**: Clear user consent for data context sharing
-4. **Performance**: Lazy load components, minimize memory usage
+## Development Workflow
 
-### Security Requirements
-- API keys stored in VS Code SecretStorage only
-- No sensitive data in logs or telemetry
-- Data sampling happens locally before sending
-- Support for air-gapped environments
+### Setup
 
-## Feature Implementation Guide
+```bash
+# Install dependencies
+npm install
 
-### Phase 1: Foundation (Week 1)
-Focus on getting Claude Code running within Positron:
-```typescript
-// Main activation point
-export async function activate(context: vscode.ExtensionContext) {
-    const claudeManager = new ClaudeManager(context);
-    await claudeManager.initialize();
-    
-    // Register basic command
-    context.subscriptions.push(
-        vscode.commands.registerCommand('claude-studio.start', 
-            () => claudeManager.startClaude())
-    );
+# Compile TypeScript
+npm run compile
+
+# Watch mode (auto-recompile on changes)
+npm run watch
+```
+
+### Testing
+
+```bash
+# Run all tests (launches VS Code Extension Host)
+npm test
+
+# Tests execute in ~10-15ms
+# Output: 45 passing, 0 failing
+```
+
+### Debugging
+
+1. Open project in VS Code/Positron
+2. Press F5 to launch Extension Development Host
+3. Test commands in new window
+4. Check Debug Console for logs
+5. Set breakpoints in TypeScript files
+
+### Building
+
+```bash
+# Create VSIX package
+npm run package
+
+# Generates: claude-studio-0.2.1.vsix
+```
+
+### Manual Testing in Positron
+
+1. Compile: `npm run compile`
+2. Package: `npm run package`
+3. Open Positron
+4. Cmd+Shift+P → "Install from VSIX"
+5. Select generated `.vsix` file
+6. Restart Positron
+7. Test commands:
+   - Start Claude Assistant
+   - Configure API Key
+   - Explain This Code (select code first)
+   - Generate Documentation (select function)
+   - Analyze Data (right-click CSV/JSON file)
+
+## Available Commands
+
+All commands prefixed with "Claude Studio:" in command palette.
+
+**Core**:
+- Start Claude Assistant
+- Stop Claude
+- Configure API Key
+- Install Claude Code CLI
+
+**Code Operations** (require text selection):
+- Explain This Code
+- Generate Documentation (language-specific: docstrings, Roxygen2, JSDoc)
+- Debug Error with Claude
+
+**Data Operations** (CSV/TSV/JSON files):
+- Analyze Data with Claude
+- Suggest Data Analysis
+
+## Adding New Features
+
+### 1. Add a New Command
+
+**package.json**:
+```json
+{
+  "contributes": {
+    "commands": [{
+      "command": "claude-studio.yourCommand",
+      "title": "Claude Studio: Your Command",
+      "category": "Claude Studio"
+    }]
+  }
 }
 ```
 
-### Phase 2: Core Features (Week 2)
-Implement data science-specific commands:
-- Extract dataframe context
-- Add "Analyze with Claude" to data viewer
-- Create code explanation features
-
-### Phase 3: Enhanced UI (Week 3)
-Build the Claude panel interface:
-- Webview-based chat
-- Syntax highlighted code blocks
-- Copy/insert code functionality
-
-### Phase 4: Data Science Features (Week 4)
-Add specialized capabilities:
-- Statistical test recommendations
-- Visualization improvements
-- Documentation generation
-
-### Phase 5: Polish & Release (Week 5)
-Prepare for public release:
-- Complete test coverage
-- Write user documentation
-- Create demo videos
-
-## Testing Strategy
-
-### Unit Tests
-Test individual components in isolation:
+**src/commands/index.ts**:
 ```typescript
-describe('ClaudeManager', () => {
-    it('should initialize with correct configuration', async () => {
-        const manager = new ClaudeManager(mockContext);
-        await manager.initialize();
-        expect(manager.isReady()).toBe(true);
+export async function yourCommand(context: vscode.ExtensionContext) {
+    // Implementation
+}
+```
+
+**src/extension.ts**:
+```typescript
+context.subscriptions.push(
+    vscode.commands.registerCommand(
+        'claude-studio.yourCommand',
+        () => yourCommand(context)
+    )
+);
+```
+
+### 2. Add Context Menu Integration
+
+**package.json**:
+```json
+{
+  "menus": {
+    "editor/context": [{
+      "command": "claude-studio.yourCommand",
+      "group": "claude",
+      "when": "editorHasSelection"
+    }]
+  }
+}
+```
+
+### 3. Add Tests
+
+**src/test/suite/yourFeature.test.ts**:
+```typescript
+import * as assert from 'assert';
+import { YourClass } from '../../path/to/class';
+
+suite('Your Feature Test Suite', () => {
+    test('should do something', () => {
+        const result = yourFunction();
+        assert.strictEqual(result, expected);
     });
 });
 ```
 
-### Integration Tests
-Test extension within Positron:
-- Command execution
-- UI rendering
-- Data context extraction
+## Configuration Settings
 
-### Manual Testing Checklist
-- [ ] Extension installs without errors
-- [ ] Claude commands appear in palette
-- [ ] API key configuration works
-- [ ] Data analysis features function
-- [ ] No performance degradation
+Users can customize via Settings → Extensions → Claude Studio:
 
-## API Key Configuration
-Users will need to provide their Anthropic API key:
-1. Open command palette
-2. Run "Claude Studio: Configure API Key"
-3. Enter API key (stored securely)
-4. Verify connection
+- `claude-studio.model`: Claude model (default: claude-3-sonnet)
+- `claude-studio.maxTokens`: Max response tokens (default: 4096)
+- `claude-studio.temperature`: Response creativity 0-1 (default: 0.7)
+- `claude-studio.dataContextSize`: Max rows for data context (default: 1000)
+- `claude-studio.autoSuggest`: Enable auto suggestions (default: true)
+- `claude-studio.debug`: Enable debug logging (default: false)
 
-## Common Tasks
+## Data Context Provider
 
-### Adding a New Command
-1. Define command in `package.json`
-2. Implement handler in `commands/`
-3. Register in `extension.ts`
-4. Add tests
-5. Update documentation
+**Key Features**:
+- Parses CSV, TSV, JSON files
+- Infers data types: int, float, bool, string, datetime
+- Detects missing values
+- Calculates column statistics
+- Creates data preview (first 10 rows)
+- Formats context for Claude
 
-### Debugging the Extension
-```bash
-# In VS Code
-1. Open the claude-studio folder
-2. Press F5 to launch Extension Development Host
-3. Test commands in the new window
-4. Check Debug Console for logs
+**Type Inference Logic** (src/providers/dataContext.ts:218):
+```typescript
+// Order matters: booleans must be checked before numbers
+// because Number(true) = 1, Number(false) = 0
+1. Check for booleans
+2. Check for numbers (int vs float)
+3. Check for dates (YYYY-MM-DD, MM/DD/YYYY, ISO)
+4. Default to string
 ```
 
-### Building for Release
-```bash
-# Build extension
-npm run build
+## Release Process
 
-# Package for distribution
-vsce package
+**For new releases**:
 
-# Publish to marketplace (when ready)
-vsce publish
-```
+1. Update version in `package.json`
+2. Update `CHANGELOG.md` with changes
+3. Commit changes: `git commit -m "chore: Release v0.x.x"`
+4. Create tag: `git tag -a v0.x.x -m "Release v0.x.x"`
+5. Push: `git push origin main --tags`
+6. GitHub Actions automatically creates release with VSIX
 
-## Data Science Use Cases
+## Common Issues
 
-### Primary Workflows
-1. **Exploratory Data Analysis**: Get insights about datasets quickly
-2. **Statistical Modeling**: Receive guidance on appropriate tests
-3. **Visualization**: Generate and improve plots
-4. **Documentation**: Create methods sections and result descriptions
+**Extension not loading**:
+- Check VS Code/Positron version (requires 1.41.0+)
+- View Output → Claude Studio for errors
+- Try reinstalling from VSIX
 
-### Example Commands
-- "Claude, analyze this dataframe for outliers"
-- "What statistical test should I use for this comparison?"
-- "Help me create a publication-ready visualization"
-- "Generate a methods paragraph for this analysis"
+**Tests failing**:
+- Ensure compiled: `npm run compile`
+- Fixtures copied: `node scripts/copy-fixtures.js`
+- Clean rebuild: `rm -rf out && npm run compile`
 
-## Performance Considerations
-- Limit data context to 1000 rows by default
-- Use streaming for large responses
-- Cache frequent operations
-- Lazy load UI components
+**Claude not responding**:
+- Verify API key: Command Palette → "Claude Studio: Configure API Key"
+- Check Claude Code installed: `claude --version`
+- View terminal output for errors
 
-## Future Enhancements
-1. **Local Model Support**: Run models locally for privacy
-2. **Collaborative Features**: Share Claude conversations
-3. **Custom Prompts**: Data science-specific prompt library
-4. **Research Templates**: Pre-built analysis workflows
+## Performance Notes
 
-## Troubleshooting
+- Extension activates on startup (fast: <100ms)
+- Data context limited to 1000 rows by default
+- Type inference processes preview only (first 10 rows)
+- Caching used for parsed data contexts
 
-### Common Issues
-1. **Claude not responding**: Check API key and network
-2. **Performance issues**: Reduce data context size
-3. **Extension not loading**: Check Positron compatibility
+## Next Development Priorities
 
-### Debug Mode
-Enable verbose logging:
-```json
-"claude-studio.debug": true
-```
+**Phase 3: Enhanced UI**:
+1. Create webview-based Claude panel
+   - Chat interface with syntax highlighting
+   - Copy/insert code functionality
+   - Conversation history
+2. Add status bar integration
+   - Show Claude status
+   - Quick access to commands
+3. Implement inline suggestions
+   - Code completion integration
+   - Contextual suggestions
 
-## Contributing
-This project follows Positron's contribution guidelines with additional requirements:
-- All AI features must be optional
-- Respect user privacy and consent
-- Focus on data science workflows
-- Maintain backward compatibility
+**Phase 4: Data Science Features**:
+1. Statistical test recommendations
+2. Visualization code generation
+3. Plot improvement suggestions
+4. Research documentation generation
 
 ## Resources
-- [Positron Documentation](https://github.com/posit-dev/positron/wiki)
-- [VS Code Extension API](https://code.visualstudio.com/api)
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Implementation Plan](./IMPLEMENTATION_PLAN.md)
 
-## License
-This extension follows Positron's Elastic License 2.0. See LICENSE file for details.
+- **Documentation**: See README.md, CONTRIBUTING.md, CHANGELOG.md
+- **Tests**: See src/test/README.md
+- **VS Code API**: https://code.visualstudio.com/api
+- **Claude Code**: https://docs.anthropic.com/en/docs/claude-code
+- **Positron**: https://github.com/posit-dev/positron
 
-## Support
-- GitHub Issues: Bug reports and feature requests
-- Discussions: General questions and ideas
-- Email: support@claude-studio.dev (when launched)
+## Notes for AI Assistants
 
----
-**Note**: This document is the source of truth for AI assistants working on this project. Always refer to this file for project context and development guidelines.
+This is a working extension in active development. All code compiles, tests pass, and features work in production. Focus on:
+- Maintaining existing architecture patterns
+- Adding comprehensive tests for new features
+- Following TypeScript strict mode
+- Preserving backward compatibility
+- Documenting public APIs with TSDoc
+
+When asked to add features, refer to the "Adding New Features" section for patterns.
