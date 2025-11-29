@@ -2,32 +2,34 @@
 
 ## Project Overview
 
-Claude Studio is a standalone VS Code/Positron extension that integrates Claude Code CLI into data science workflows. It provides intelligent code assistance, data file analysis, and documentation generation specifically for researchers and data scientists.
+Standalone VS Code/Positron extension integrating Claude Code CLI for data science workflows. Provides code assistance, data analysis, and documentation generation.
 
 **Repository**: https://github.com/shandley/claude-studio
-**Current Version**: v0.6.0
+**Version**: v0.6.0
 **License**: Elastic License 2.0
 
 ## Current Status
 
-**Completed (Phases 1-6)**:
+**Completed Features (v0.1.0 - v0.6.0)**:
 - Core Claude Code CLI integration via terminal
-- Secure API key management (VS Code globalState)
+- Secure API key storage (VS Code globalState)
 - Data file parsing (CSV/TSV/JSON) with type inference
 - Code explanation and documentation generation
 - Language-aware features (Python, R, JavaScript/TypeScript)
 - Error debugging with language server integration
-- Comprehensive test suite (45 tests, 100% DataContextProvider coverage)
-- CI/CD automation (build validation, automated releases)
-- **Status bar integration** (interactive status indicator with quick actions)
-- **Statistical test recommendations** (intelligent analysis-driven test suggestions with R/Python code)
-- **Visualization code generation** (publication-ready ggplot2 and matplotlib/seaborn code)
-- **Plot improvement suggestions** (code-based analysis and enhancement recommendations)
+- Status bar integration with quick actions
+- Statistical test recommendations (t-test, ANOVA, correlation, chi-square, regression)
+- Visualization code generation (6 chart types: histogram, scatter, box, bar, line, heatmap)
+- Plot improvement suggestions (select code, get AI recommendations)
 
-**Next Phase (Phase 4 - Remaining Features)**:
-- Research documentation generation (methods sections, results formatting)
+**Testing**: 45 passing tests, 100% DataContextProvider coverage
 
-**Future Enhancements**:
+**CI/CD**: Automated builds and releases via GitHub Actions
+
+**Remaining Features**:
+- Research documentation generation
+
+**Future**:
 - Inline code suggestions
 - Enhanced terminal integration
 
@@ -95,45 +97,34 @@ npm test
 ### Building
 
 ```bash
-# Create VSIX package
-npm run package
-
-# Generates: claude-studio-0.2.1.vsix
+npm run package  # Creates claude-studio-0.6.0.vsix
 ```
 
 ### Manual Testing in Positron
 
-1. Compile: `npm run compile`
-2. Package: `npm run package`
-3. Open Positron
-4. Cmd+Shift+P → "Install from VSIX"
-5. Select generated `.vsix` file
-6. Restart Positron
-7. Test commands:
-   - Start Claude Assistant
-   - Configure API Key
-   - Explain This Code (select code first)
-   - Generate Documentation (select function)
-   - Analyze Data (right-click CSV/JSON file)
+1. `npm run compile && npm run package`
+2. Open Positron
+3. Cmd+Shift+P → "Install from VSIX"
+4. Select `.vsix` file and restart
 
 ## Available Commands
 
-All commands prefixed with "Claude Studio:" in command palette.
-
 **Core**:
-- Start Claude Assistant
-- Stop Claude
+- Start/Stop Claude Assistant
 - Configure API Key
 - Install Claude Code CLI
 
-**Code Operations** (require text selection):
-- Explain This Code
-- Generate Documentation (language-specific: docstrings, Roxygen2, JSDoc)
+**Code Operations**:
+- Explain This Code (select code)
+- Generate Documentation (docstrings, Roxygen2, JSDoc)
 - Debug Error with Claude
+- Improve This Plot (select plot code)
 
-**Data Operations** (CSV/TSV/JSON files):
-- Analyze Data with Claude
+**Data Operations** (right-click CSV/TSV/JSON):
+- Analyze Data
 - Suggest Data Analysis
+- Recommend Statistical Tests
+- Generate Visualization Code
 
 ## Adding New Features
 
@@ -265,27 +256,17 @@ Users can customize via Settings → Extensions → Claude Studio:
 - Type inference processes preview only (first 10 rows)
 - Caching used for parsed data contexts
 
-## Next Development Priorities
+## Key Implementation Files
 
-**Phase 3: Enhanced Features**:
-1. Add status bar integration
-   - Show Claude status (active/idle/error)
-   - Quick access to commands
-   - API usage indicators
-2. Implement inline suggestions
-   - Code completion integration
-   - Contextual suggestions
-   - Smart triggering based on context
-3. Enhanced terminal integration
-   - Better output formatting
-   - Command history navigation
-   - Response highlighting
-
-**Phase 4: Data Science Features**:
-1. Statistical test recommendations
-2. Visualization code generation
-3. Plot improvement suggestions
-4. Research documentation generation
+**Core Components**:
+- `src/extension.ts` - Extension activation, command registration
+- `src/claude/claudeManager.ts` - Process lifecycle (lines 20-55: initialize, 57-91: startClaude)
+- `src/claude/claudeAuth.ts` - API key management (lines 49-75: promptForApiKey)
+- `src/providers/dataContext.ts` - Data parsing (line 218: type inference)
+- `src/providers/statisticalAnalyzer.ts` - Statistical test recommendations
+- `src/providers/visualizationGenerator.ts` - Visualization code generation
+- `src/commands/index.ts` - All command implementations
+- `src/ui/statusBar.ts` - Status bar management
 
 ## Resources
 
