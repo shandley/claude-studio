@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { ClaudeManager } from '../claude/claudeManager';
 import { DataContextProvider } from '../providers/dataContext';
 import { StatisticalTestAnalyzer } from '../providers/statisticalAnalyzer';
+import { VisualizationGenerator } from '../providers/visualizationGenerator';
 import { ErrorHandler } from '../utils/error';
 
 export class ClaudeCommands {
@@ -315,6 +316,54 @@ Please:
     }
 
     /**
+     * Generate visualization code based on data structure
+     */
+    async generateVisualizations(uri?: vscode.Uri): Promise<void> {
+        try {
+            // Check if Claude is initialized
+            const initialized = await this.claudeManager.initialize();
+            if (!initialized) {
+                return;
+            }
+
+            // Get data context
+            let dataContext = null;
+            if (uri) {
+                dataContext = await this.dataProvider.getFileDataContext(uri);
+            } else {
+                dataContext = await this.dataProvider.getEditorDataContext();
+            }
+
+            if (!dataContext) {
+                vscode.window.showInformationMessage('No data file selected');
+                return;
+            }
+
+            if (!dataContext.columns || dataContext.columns.length === 0) {
+                vscode.window.showInformationMessage('Unable to analyze data structure');
+                return;
+            }
+
+            // Generate visualization recommendations
+            const recommendations = VisualizationGenerator.generateRecommendations(dataContext);
+
+            if (recommendations.length === 0) {
+                vscode.window.showInformationMessage('No visualization recommendations generated');
+                return;
+            }
+
+            // Format recommendations as a Claude prompt
+            const prompt = VisualizationGenerator.formatRecommendationsForClaude(dataContext, recommendations);
+
+            // Send to Claude
+            await this.claudeManager.sendCommand(prompt);
+            vscode.window.showInformationMessage(`Generated ${recommendations.length} visualization${recommendations.length > 1 ? 's' : ''} for ${dataContext.name}`);
+        } catch (error) {
+            ErrorHandler.handle(error, 'Generate Visualizations');
+        }
+    }
+
+    /**
      * Register all commands
      */
     static registerCommands(
@@ -347,6 +396,11 @@ Please:
         // Register recommend statistical tests command
         context.subscriptions.push(
             vscode.commands.registerCommand('claude-studio.recommendTests', (uri?: vscode.Uri) => commands.recommendStatisticalTests(uri))
+        );
+
+        // Register generate visualizations command
+        context.subscriptions.push(
+            vscode.commands.registerCommand('claude-studio.generateVisualizations', (uri?: vscode.Uri) => commands.generateVisualizations(uri))
         );
     }
 }

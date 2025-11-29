@@ -5,12 +5,12 @@
 Claude Studio is a standalone VS Code/Positron extension that integrates Claude Code CLI into data science workflows. It provides intelligent code assistance, data file analysis, and documentation generation specifically for researchers and data scientists.
 
 **Repository**: https://github.com/shandley/claude-studio
-**Current Version**: v0.4.0
+**Current Version**: v0.5.0
 **License**: Elastic License 2.0
 
 ## Current Status
 
-**Completed (Phases 1-4)**:
+**Completed (Phases 1-5)**:
 - Core Claude Code CLI integration via terminal
 - Secure API key management (VS Code globalState)
 - Data file parsing (CSV/TSV/JSON) with type inference
@@ -21,11 +21,11 @@ Claude Studio is a standalone VS Code/Positron extension that integrates Claude 
 - CI/CD automation (build validation, automated releases)
 - **Status bar integration** (interactive status indicator with quick actions)
 - **Statistical test recommendations** (intelligent analysis-driven test suggestions with R/Python code)
+- **Visualization code generation** (publication-ready ggplot2 and matplotlib/seaborn code)
 
-**Next Phase (Phase 4 - Remaining Data Science Features)**:
-- Visualization code generation
-- Plot improvement suggestions
-- Research documentation generation
+**Next Phase (Phase 4 - Remaining Features)**:
+- Plot improvement suggestions (analyze existing plots and suggest enhancements)
+- Research documentation generation (methods sections, results formatting)
 
 **Future Enhancements**:
 - Inline code suggestions

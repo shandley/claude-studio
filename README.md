@@ -3,7 +3,7 @@
 **AI-enhanced data science development with Claude Code integration**
 
 [![License](https://img.shields.io/badge/license-Elastic--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.4.0-green.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-0.5.0-green.svg)](package.json)
 [![Build](https://github.com/shandley/claude-studio/actions/workflows/build.yml/badge.svg)](https://github.com/shandley/claude-studio/actions/workflows/build.yml)
 
 Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science development workflow. It provides intelligent code assistance, data analysis, and documentation features specifically designed for researchers, data scientists, and analysts.
@@ -26,6 +26,11 @@ Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extensi
   - Provides test assumptions and when to use each test
   - Includes R and Python code examples
   - Context-aware based on your data structure
+- **Visualization Code Generation**: Publication-ready plot code
+  - Generates ggplot2 (R) and matplotlib/seaborn (Python) code
+  - 6 chart types: histogram, scatter, box plot, bar chart, line plot, heatmap
+  - Includes best practices and statistical annotations
+  - Publication-ready (300 DPI, proper themes, labels)
 
 ### 💻 **Code Intelligence**
 - **Explain Code**: Get detailed explanations of selected code with language context

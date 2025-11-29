@@ -5,6 +5,22 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2024-11-29
+
+### Added
+- **Visualization Code Generation**: Publication-ready plot code for R and Python
+  - Automatically generates ggplot2 (R) and matplotlib/seaborn (Python) code
+  - Supports 6 chart types: histogram, scatter plot, box plot, bar chart, line plot, correlation heatmap
+  - Context-aware recommendations based on variable types
+  - Includes best practices, proper labels, themes, and colors
+  - Publication-ready code with save functionality (PNG, 300 DPI)
+  - Statistical annotations (correlation coefficients, p-values, test results)
+  - New command: `claude-studio.generateVisualizations` (right-click on data files)
+- **VisualizationGenerator**: New class for generating visualization code (`src/providers/visualizationGenerator.ts`)
+  - Smart chart type selection based on data structure
+  - Best practices guidance for each chart type
+  - Customization recommendations
+
 ## [0.4.0] - 2024-11-29
 
 ### Added
