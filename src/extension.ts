@@ -49,15 +49,15 @@ export async function activate(context: vscode.ExtensionContext) {
     const hasShownWelcome = context.globalState.get('claude-studio.hasShownWelcome', false);
     if (!hasShownWelcome) {
         const selection = await vscode.window.showInformationMessage(
-            'Welcome to Claude Studio! Would you like to configure your API key now?',
+            'Welcome to Claude Studio! Would you like to configure authentication now?',
             'Configure',
             'Later'
         );
-        
+
         if (selection === 'Configure') {
-            vscode.commands.executeCommand('claude-studio.configureApiKey');
+            vscode.commands.executeCommand('claude-studio.configureAuth');
         }
-        
+
         context.globalState.update('claude-studio.hasShownWelcome', true);
     }
 }
@@ -142,6 +142,32 @@ function registerCommands(context: vscode.ExtensionContext): void {
         }
     );
 
+    // Configure authentication command
+    const configureAuthCommand = vscode.commands.registerCommand(
+        'claude-studio.configureAuth',
+        async () => {
+            try {
+                await authManager.configureAuth();
+                await updateStatusBar();
+            } catch (error) {
+                ErrorHandler.handle(error, 'Configure Authentication');
+            }
+        }
+    );
+
+    // Login with subscription command
+    const loginSubscriptionCommand = vscode.commands.registerCommand(
+        'claude-studio.loginSubscription',
+        async () => {
+            try {
+                await authManager.loginWithSubscription();
+                await updateStatusBar();
+            } catch (error) {
+                ErrorHandler.handle(error, 'Login with Subscription');
+            }
+        }
+    );
+
     // Stop Claude command
     const stopCommand = vscode.commands.registerCommand('claude-studio.stop', async () => {
         try {
@@ -174,16 +200,16 @@ function registerCommands(context: vscode.ExtensionContext): void {
         if (currentStatus === ClaudeStatus.NotInstalled) {
             items.push({ label: '$(cloud-download) Install Claude Code', description: 'Install Claude Code CLI globally' });
         } else if (currentStatus === ClaudeStatus.NotConfigured) {
-            items.push({ label: '$(key) Configure API Key', description: 'Set up your Anthropic API key' });
+            items.push({ label: '$(shield) Configure Authentication', description: 'Choose API Key or Pro/Max Subscription' });
         } else if (currentStatus === ClaudeStatus.Idle) {
             items.push({ label: '$(play) Start Claude', description: 'Start Claude terminal' });
-            items.push({ label: '$(key) Configure API Key', description: 'Update your API key' });
+            items.push({ label: '$(shield) Configure Authentication', description: 'Change auth method or credentials' });
         } else if (currentStatus === ClaudeStatus.Active) {
             items.push({ label: '$(stop) Stop Claude', description: 'Stop Claude terminal' });
             items.push({ label: '$(terminal) Show Terminal', description: 'Focus Claude terminal' });
         } else if (currentStatus === ClaudeStatus.Error) {
             items.push({ label: '$(refresh) Restart Claude', description: 'Stop and start Claude' });
-            items.push({ label: '$(key) Configure API Key', description: 'Update your API key' });
+            items.push({ label: '$(shield) Configure Authentication', description: 'Change auth method or credentials' });
         }
 
         // Common actions
@@ -200,6 +226,8 @@ function registerCommands(context: vscode.ExtensionContext): void {
         // Execute selected action
         if (selection.label.includes('Install')) {
             await vscode.commands.executeCommand('claude-studio.install');
+        } else if (selection.label.includes('Configure Authentication')) {
+            await vscode.commands.executeCommand('claude-studio.configureAuth');
         } else if (selection.label.includes('Configure API Key')) {
             await vscode.commands.executeCommand('claude-studio.configureApiKey');
         } else if (selection.label.includes('Start Claude')) {
@@ -222,6 +250,8 @@ function registerCommands(context: vscode.ExtensionContext): void {
         startCommand,
         analyzeCommand,
         configureApiKeyCommand,
+        configureAuthCommand,
+        loginSubscriptionCommand,
         stopCommand,
         installCommand,
         quickActionsCommand
@@ -246,9 +276,9 @@ async function updateStatusBar(): Promise<void> {
             return;
         }
 
-        // Check if API key is configured
-        const apiKey = await authManager.getApiKey();
-        if (!apiKey) {
+        // Check if authentication is configured (API key or subscription)
+        const isAuthenticated = await authManager.isAuthenticated();
+        if (!isAuthenticated) {
             statusBarManager.updateStatus(ClaudeStatus.NotConfigured);
             return;
         }

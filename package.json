@@ -2,7 +2,7 @@
   "name": "claude-studio",
   "displayName": "Claude Studio",
   "description": "AI-enhanced data science development with Claude",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "publisher": "shandley",
   "engines": {
     "vscode": "^1.41.0"
@@ -46,6 +46,16 @@
       {
         "command": "claude-studio.configureApiKey",
         "title": "Claude Studio: Configure API Key",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.configureAuth",
+        "title": "Claude Studio: Configure Authentication",
+        "category": "Claude Studio"
+      },
+      {
+        "command": "claude-studio.loginSubscription",
+        "title": "Claude Studio: Login with Pro/Max Subscription",
         "category": "Claude Studio"
       },
       {
@@ -148,10 +158,24 @@
     "configuration": {
       "title": "Claude Studio",
       "properties": {
+        "claude-studio.authMethod": {
+          "type": "string",
+          "enum": [
+            "api-key",
+            "subscription"
+          ],
+          "enumDescriptions": [
+            "Use Anthropic API key (pay-per-use)",
+            "Use Claude Pro/Max subscription (included usage)"
+          ],
+          "default": "subscription",
+          "description": "Authentication method for Claude Code",
+          "scope": "application"
+        },
         "claude-studio.apiKey": {
           "type": "string",
           "default": "",
-          "description": "Anthropic API key for Claude (stored securely)",
+          "description": "Anthropic API key for Claude (only used when authMethod is 'api-key')",
           "scope": "application"
         },
         "claude-studio.model": {

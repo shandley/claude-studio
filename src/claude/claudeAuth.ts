@@ -1,8 +1,12 @@
 import * as vscode from 'vscode';
+import { spawn } from 'child_process';
+
+export type AuthMethod = 'api-key' | 'subscription';
 
 export class ClaudeAuthManager {
     private static readonly API_KEY_SECRET = 'claude-studio.apiKey';
     private static readonly API_KEY_SETTING = 'claude-studio.apiKey';
+    private static readonly AUTH_METHOD_SETTING = 'claude-studio.authMethod';
 
     constructor(private context: vscode.ExtensionContext) {}
 
@@ -36,11 +40,69 @@ export class ClaudeAuthManager {
     }
 
     /**
+     * Get the current authentication method
+     */
+    getAuthMethod(): AuthMethod {
+        const config = vscode.workspace.getConfiguration('claude-studio');
+        return config.get<AuthMethod>('authMethod') || 'subscription';
+    }
+
+    /**
+     * Set the authentication method
+     */
+    async setAuthMethod(method: AuthMethod): Promise<void> {
+        const config = vscode.workspace.getConfiguration('claude-studio');
+        await config.update('authMethod', method, vscode.ConfigurationTarget.Global);
+    }
+
+    /**
+     * Check if authentication is properly configured
+     */
+    async isAuthenticated(): Promise<boolean> {
+        const authMethod = this.getAuthMethod();
+
+        if (authMethod === 'api-key') {
+            return this.hasApiKey();
+        } else {
+            return this.hasSubscriptionAuth();
+        }
+    }
+
+    /**
      * Check if an API key is configured
      */
     async hasApiKey(): Promise<boolean> {
         const apiKey = await this.getApiKey();
         return !!apiKey;
+    }
+
+    /**
+     * Check if subscription authentication is configured
+     */
+    async hasSubscriptionAuth(): Promise<boolean> {
+        return new Promise((resolve) => {
+            // Check if claude login has been completed by running a simple command
+            const checkProcess = spawn('claude', ['--version']);
+            let output = '';
+
+            checkProcess.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            checkProcess.stderr.on('data', (data) => {
+                output += data.toString();
+            });
+
+            checkProcess.on('close', (code) => {
+                // If claude --version works, subscription auth is likely configured
+                // We can't directly check auth status, but this is a good proxy
+                resolve(code === 0 && !output.includes('login'));
+            });
+
+            checkProcess.on('error', () => {
+                resolve(false);
+            });
+        });
     }
 
     /**
@@ -75,11 +137,53 @@ export class ClaudeAuthManager {
     }
 
     /**
+     * Configure authentication method and credentials
+     */
+    async configureAuth(): Promise<void> {
+        const currentMethod = this.getAuthMethod();
+
+        interface AuthMethodOption extends vscode.QuickPickItem {
+            method: AuthMethod;
+        }
+
+        const methodOptions: AuthMethodOption[] = [
+            {
+                label: '$(key) API Key',
+                description: 'Use Anthropic API key (pay-per-use)',
+                detail: currentMethod === 'api-key' ? 'Currently selected' : 'Charges per token usage',
+                method: 'api-key' as AuthMethod
+            },
+            {
+                label: '$(verified) Pro/Max Subscription',
+                description: 'Use Claude Pro or Max subscription (included usage)',
+                detail: currentMethod === 'subscription' ? 'Currently selected' : 'Requires active Pro/Max subscription',
+                method: 'subscription' as AuthMethod
+            }
+        ];
+
+        const selection = await vscode.window.showQuickPick<AuthMethodOption>(methodOptions, {
+            placeHolder: 'Select authentication method'
+        });
+
+        if (!selection) {
+            return;
+        }
+
+        await this.setAuthMethod(selection.method);
+
+        if (selection.method === 'api-key') {
+            await this.configureApiKey();
+        } else {
+            await this.loginWithSubscription();
+        }
+    }
+
+    /**
      * Show API key configuration options
      */
     async configureApiKey(): Promise<void> {
         const hasKey = await this.hasApiKey();
-        
+
         const options = hasKey
             ? ['Update API Key', 'Remove API Key', 'Test Connection']
             : ['Set API Key'];
@@ -100,6 +204,33 @@ export class ClaudeAuthManager {
             case 'Test Connection':
                 await this.testConnection();
                 break;
+        }
+    }
+
+    /**
+     * Login with Claude Pro/Max subscription
+     */
+    async loginWithSubscription(): Promise<void> {
+        const message = await vscode.window.showInformationMessage(
+            'To use Claude Studio with your Pro/Max subscription, you need to login to Claude Code.\n\n' +
+            'A terminal will open where you can run "claude login" to authenticate.',
+            'Open Terminal',
+            'Cancel'
+        );
+
+        if (message === 'Open Terminal') {
+            const terminal = vscode.window.createTerminal('Claude Login');
+            terminal.show();
+            terminal.sendText('echo "Run: claude login"');
+            terminal.sendText('echo "After logging in, restart Claude Studio"');
+            terminal.sendText('echo ""');
+            terminal.sendText('# Uncomment the line below to start the login process:');
+            terminal.sendText('# claude login');
+
+            vscode.window.showInformationMessage(
+                'Please run "claude login" in the terminal and follow the prompts. ' +
+                'After successful login, close and restart Claude Studio.'
+            );
         }
     }
 

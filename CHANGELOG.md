@@ -5,6 +5,52 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2025-11-29
+
+### Added
+- **Claude Pro/Max Subscription Support**: Use Claude Studio with your existing subscription instead of API keys
+  - New authentication method setting: choose between "API Key" or "Subscription" (default: Subscription)
+  - Subscription mode uses `claude login` for OAuth-based authentication with Pro/Max plans
+  - No API key required when using subscription - uses your plan's included usage limits
+  - Avoids additional API charges for Pro ($20/month) and Max ($100-200/month) subscribers
+  - New command: `claude-studio.configureAuth` - Configure authentication method and credentials
+  - New command: `claude-studio.loginSubscription` - Login with Pro/Max subscription
+  - Updated welcome dialog to use "Configure Authentication" instead of "Configure API Key"
+  - Enhanced quick actions menu with "Configure Authentication" option
+
+### Changed
+- **ClaudeAuthManager** (`src/claude/claudeAuth.ts`):
+  - Added `AuthMethod` type ('api-key' | 'subscription')
+  - New methods: `getAuthMethod()`, `setAuthMethod()`, `isAuthenticated()`, `hasSubscriptionAuth()`
+  - New UI method: `configureAuth()` - Interactive picker for choosing auth method
+  - New UI method: `loginWithSubscription()` - Guides user through `claude login` process
+  - Existing `configureApiKey()` method still available for API key-specific configuration
+- **ClaudeManager** (`src/claude/claudeManager.ts`):
+  - Terminal creation now conditional: only sets `ANTHROPIC_API_KEY` env var when using API key method
+  - When using subscription method, terminal created without API key to use OAuth token
+  - `initialize()` checks authentication based on selected method
+  - Success messages show which auth method is active
+- **Extension** (`src/extension.ts`):
+  - Registered new commands: `configureAuth`, `loginSubscription`
+  - Updated status bar and quick actions to use `isAuthenticated()` instead of API key-only check
+  - Welcome message changed to "Configure Authentication" for better clarity
+- **Configuration** (`package.json`):
+  - New setting: `claude-studio.authMethod` (enum: 'api-key' | 'subscription', default: 'subscription')
+  - Updated `claude-studio.apiKey` description to clarify it's only used when authMethod is 'api-key'
+
+### Technical Details
+- Subscription authentication leverages Claude Code CLI's built-in OAuth token support
+- When `ANTHROPIC_API_KEY` is not set, Claude CLI automatically uses stored OAuth credentials
+- Authentication state check uses `claude --version` as a proxy for subscription auth status
+- All 45 existing tests pass with no changes required
+- Backward compatible: Users with API keys can continue using them by selecting "API Key" method
+
+### Benefits for Users
+- **Cost Savings**: Pro/Max subscribers no longer pay twice (subscription + API usage)
+- **Unified Experience**: Use same Claude account across CLI and extension
+- **Simplified Setup**: No need to create separate API keys - just login once
+- **Higher Limits**: Max plan users get 5-20x higher limits than API key usage
+
 ## [0.6.0] - 2024-11-29
 
 ### Added

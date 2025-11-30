@@ -1,405 +1,279 @@
-# Claude Studio Extension for Positron
+# Claude Studio Extension
 
 **AI-enhanced data science development with Claude Code integration**
 
 [![License](https://img.shields.io/badge/license-Elastic--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.6.0-green.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-0.7.0-green.svg)](package.json)
 [![Build](https://github.com/shandley/claude-studio/actions/workflows/build.yml/badge.svg)](https://github.com/shandley/claude-studio/actions/workflows/build.yml)
 
-Claude Studio is a [Positron IDE](https://github.com/posit-dev/positron) extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science development workflow. It provides intelligent code assistance, data analysis, and documentation features specifically designed for researchers, data scientists, and analysts.
+Claude Studio is a VS Code/Positron extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science workflow. Get intelligent code assistance, data analysis, and documentation features designed for researchers, data scientists, and analysts.
 
 ---
 
-## 🌟 Features
+## ✨ Features
 
-### 🤖 **Claude Code Integration**
-- Launch Claude directly in Positron's terminal
-- Secure API key management
-- Full Claude Code CLI capabilities including MCP servers
+### 🔐 **Flexible Authentication**
+- **Use Your Claude Subscription** (Pro/Max) - No API costs, uses your plan's included usage
+- **Or Use API Key** - Pay-per-use for non-subscribers
+- Automatic authentication detection and setup
 
-### 📊 **Intelligent Data Analysis**
-- **CSV/TSV/JSON Parsing**: Automatic data structure detection and type inference
-- **Smart Context**: Extracts column names, data types, and statistics
-- **Data Suggestions**: Get AI-powered analysis recommendations for your datasets
-- **Statistical Test Recommendations**: Automatic analysis-driven test suggestions
-  - Recommends appropriate tests based on variable types (t-test, ANOVA, correlation, chi-square, regression)
-  - Provides test assumptions and when to use each test
-  - Includes R and Python code examples
-  - Context-aware based on your data structure
-- **Visualization Code Generation**: Publication-ready plot code
-  - Generates ggplot2 (R) and matplotlib/seaborn (Python) code
-  - 6 chart types: histogram, scatter, box plot, bar chart, line plot, heatmap
-  - Includes best practices and statistical annotations
-  - Publication-ready (300 DPI, proper themes, labels)
-- **Plot Improvement Suggestions**: Enhance existing plots
-  - Select plotting code and get AI-powered improvement suggestions
-  - Supports ggplot2, matplotlib, seaborn, plotly, base R graphics
-  - Focuses on visual design, clarity, publication quality, accessibility
-  - Provides complete improved code with explanations
+### 📊 **Data Analysis**
+- **CSV/TSV/JSON Parsing**: Automatic type inference and statistics
+- **Statistical Test Recommendations**: Get appropriate tests (t-test, ANOVA, correlation, chi-square, regression) with R/Python code
+- **Visualization Code Generation**: Publication-ready plots (ggplot2, matplotlib/seaborn) for 6 chart types
+- **Plot Improvements**: Select plotting code, get AI-powered enhancement suggestions
+- **Smart Context**: Right-click data files for instant AI analysis recommendations
 
 ### 💻 **Code Intelligence**
-- **Explain Code**: Get detailed explanations of selected code with language context
-- **Generate Documentation**: Create Python docstrings, R Roxygen2, or JSDoc documentation
-- **Debug Assistance**: Analyze errors with surrounding code context
-- **Language-Aware**: Automatically detects Python, R, and JavaScript/TypeScript
+- **Explain Code**: Detailed explanations with language context
+- **Generate Documentation**: Python docstrings, R Roxygen2, JSDoc
+- **Debug Assistance**: Error analysis with surrounding code context
+- **Language-Aware**: Auto-detects Python, R, JavaScript/TypeScript
 
-### 📊 **Status Bar Integration**
-- **Visual Status Indicator**: See Claude's state at a glance (Not Installed, Not Configured, Idle, Active, Error)
-- **Quick Actions Menu**: Click status bar for context-sensitive actions (Start/Stop Claude, Configure API Key, Show Output)
-- **Real-time Updates**: Status automatically updates as Claude state changes
-- **Color-Coded Icons**: Easy visual feedback with VS Code codicons
-
-### 🎯 **Context Menu Integration**
-- Right-click on code → Explain, Document, or Debug
-- Right-click on data files → Analyze or Get Suggestions
-- Seamless workflow integration
+### 🎯 **Seamless Integration**
+- **Status Bar**: Visual indicator with quick actions
+- **Context Menus**: Right-click on code or data files
+- **Terminal Integration**: Full Claude Code CLI capabilities including MCP servers
 
 ---
 
 ## 📦 Installation
 
-### Prerequisites
-- [Positron IDE](https://github.com/posit-dev/positron) (or VS Code 1.41.0+)
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed
-- [Anthropic API key](https://console.anthropic.com/)
-
-### Install Claude Code CLI
+### 1. Install Claude Code CLI
 
 ```bash
 # Via npm (recommended)
 npm install -g @anthropic-ai/claude-code
 
-# Via Homebrew
+# Or via Homebrew
 brew install claude-code
 ```
 
-### Install Extension
+### 2. Install Extension
 
-#### From VSIX (Current)
+**From VSIX (Current)**:
 1. Download the latest `.vsix` file from [Releases](https://github.com/shandley/claude-studio/releases)
-2. Open Positron
+2. Open VS Code/Positron
 3. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
 4. Type "Install from VSIX"
-5. Select the downloaded `.vsix` file
-6. Restart Positron
+5. Select the downloaded file
+6. Restart
 
-#### From Source
+**From Source**:
 ```bash
 git clone https://github.com/shandley/claude-studio.git
 cd claude-studio
-npm install
-npm run compile
-npm run package
-# Install the generated .vsix file in Positron
+npm install && npm run package
+# Install the generated .vsix file
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### 1. Configure API Key
+### Authentication Setup
 
-First time setup:
+**Choose your authentication method:**
+
+#### Option A: Claude Pro/Max Subscription (Recommended)
+
+**Best for**: Users with Claude Pro ($20/month) or Max ($100-200/month) subscriptions
+
 1. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-2. Run: **"Claude Studio: Configure API Key"**
-3. Enter your Anthropic API key
-4. Key is stored securely in Positron's global state
+2. Run: **"Claude Studio: Configure Authentication"**
+3. Select **"Pro/Max Subscription"**
+4. In the terminal that opens, run: `claude login`
+5. Follow the browser authentication flow
+6. Done! Uses your subscription's included usage
 
-### 2. Start Claude
+**Benefits**:
+- ✅ No additional API costs
+- ✅ Higher usage limits (5-20x more than API)
+- ✅ Same account as Claude.ai
+- ✅ Simple one-time login
 
-**Option A: Via Command Palette**
+#### Option B: API Key
+
+**Best for**: Users without a subscription or preferring pay-per-use
+
+1. Get an API key from [Anthropic Console](https://console.anthropic.com/)
+2. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+3. Run: **"Claude Studio: Configure Authentication"**
+4. Select **"API Key"**
+5. Enter your API key (starts with `sk-ant-`)
+6. Key is stored securely
+
+**Note**: API usage charges apply separately from any subscription.
+
+### Start Using Claude Studio
+
+**Via Command Palette**:
 ```
 Cmd+Shift+P → "Claude Studio: Start Claude Assistant"
 ```
 
-**Option B: Automatic (when using commands)**
-- Claude will start automatically when you use any feature
-- A dedicated terminal named "Claude Studio" will open
-
-### 3. Use the Features
-
-#### Explain Code
-1. Select code in your editor
-2. Right-click → **"Claude Studio: Explain This Code"**
-3. Claude analyzes and explains in the terminal
-
-#### Generate Documentation
-1. Select a function or code block
-2. Right-click → **"Claude Studio: Generate Documentation"**
-3. Receive language-specific documentation (Python docstrings, R Roxygen2, JSDoc)
-
-#### Analyze Data Files
-1. Right-click on a `.csv`, `.tsv`, or `.json` file in Explorer
-2. Select **"Claude Studio: Suggest Data Analysis"**
-3. Get AI-powered recommendations for statistical analysis
-
-#### Debug Errors
-1. Place cursor on problematic code
-2. Run **"Claude Studio: Debug Error with Claude"**
-3. Claude analyzes errors from Positron's language server (Pyright, etc.)
+**Or Automatic**:
+- Claude starts automatically when you use any feature
+- A dedicated "Claude Studio" terminal opens
 
 ---
 
-## 📖 Usage Examples
+## 🎓 Getting Started Guide
 
-### Example 1: Explain Python Code
-```python
-# Select this code and right-click → "Explain This Code"
-def calculate_mean(data):
-    return sum(data) / len(data)
-```
+**New to Claude Studio?** Check out our comprehensive tutorial:
 
-**Claude will explain:**
-- What the function does
-- How it works
-- Any edge cases or issues (e.g., division by zero)
+📘 **[GETTING_STARTED.md](GETTING_STARTED.md)** - Step-by-step vignettes with example datasets
 
-### Example 2: Generate R Documentation
-```r
-# Select this function and right-click → "Generate Documentation"
-analyze_correlation <- function(x, y, method = "pearson") {
-  cor.test(x, y, method = method)
-}
-```
+Includes:
+- 6 complete workflows with example data
+- Real datasets (clinical trials, gene expression, surveys)
+- R and Python example scripts
+- Expected outputs and insights
+- Perfect for testing with colleagues
 
-**Claude generates Roxygen2:**
-```r
-#' Analyze Correlation Between Two Vectors
-#'
-#' @param x Numeric vector
-#' @param y Numeric vector
-#' @param method Correlation method ("pearson", "kendall", "spearman")
-#' @return A correlation test object
-#' @export
-```
+---
 
-### Example 3: Analyze CSV Data
-Right-click on `sales_data.csv` → "Suggest Data Analysis"
+## 📖 Common Workflows
 
-**Claude receives:**
-```
-Data: sales_data.csv
-Shape: 100 rows × 8 columns
+### Analyze Data
+1. Right-click on a `.csv`, `.tsv`, or `.json` file
+2. Select **"Claude Studio: Suggest Data Analysis"**
+3. Get AI recommendations for analysis, tests, and visualizations
 
-Columns:
-- date (datetime)
-- product (string)
-- quantity (int)
-- price (float)
-- region (string)
-...
+### Generate Statistical Tests
+1. Right-click on a data file
+2. Select **"Claude Studio: Recommend Statistical Tests"**
+3. Get appropriate tests with assumptions and R/Python code
 
-Preview (first 10 rows):
-[table preview]
-```
+### Generate Visualizations
+1. Right-click on a data file
+2. Select **"Claude Studio: Generate Visualization Code"**
+3. Get publication-ready ggplot2/matplotlib code for 6 chart types
 
-**Claude suggests:**
-- Exploratory data analysis steps
-- Appropriate statistical tests
-- Visualization recommendations
-- Data quality checks
+### Explain Code
+1. Select code in your editor
+2. Right-click → **"Claude Studio: Explain This Code"**
+3. Get detailed explanation in terminal
+
+### Generate Documentation
+1. Select a function or code block
+2. Right-click → **"Claude Studio: Generate Documentation"**
+3. Get language-specific docs (Python docstrings, R Roxygen2, JSDoc)
+
+### Improve Plots
+1. Select plotting code (ggplot2, matplotlib, seaborn, etc.)
+2. Right-click → **"Claude Studio: Improve This Plot"**
+3. Get enhancement suggestions and improved code
+
+### Debug Errors
+1. Place cursor on problematic code
+2. Run **"Claude Studio: Debug Error with Claude"**
+3. Get error analysis from language server diagnostics
 
 ---
 
 ## ⚙️ Configuration
 
-Access settings via: **Preferences → Settings → Extensions → Claude Studio**
+Access via: **Preferences → Settings → Extensions → Claude Studio**
 
-### Available Settings
+### Key Settings
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `claude-studio.model` | `claude-3-sonnet` | Claude model to use |
-| `claude-studio.maxTokens` | `4096` | Maximum tokens for responses |
-| `claude-studio.temperature` | `0.7` | Response creativity (0-1) |
+| `claude-studio.authMethod` | `subscription` | Authentication method: "subscription" or "api-key" |
 | `claude-studio.dataContextSize` | `1000` | Max rows for data context |
-| `claude-studio.autoSuggest` | `true` | Enable automatic suggestions |
 | `claude-studio.debug` | `false` | Enable debug logging |
 
-### Example Settings (JSON)
+**Example**:
 ```json
 {
-  "claude-studio.model": "claude-3-opus",
-  "claude-studio.temperature": 0.3,
-  "claude-studio.debug": true
+  "claude-studio.authMethod": "subscription",
+  "claude-studio.dataContextSize": 1000,
+  "claude-studio.debug": false
 }
 ```
 
 ---
 
-## 🎨 How It Compares
-
-### Claude Studio vs. Positron Assistant
+## 🆚 Claude Studio vs. Positron Assistant
 
 | Feature | Claude Studio | Positron Assistant |
 |---------|---------------|-------------------|
-| **Architecture** | Terminal-based (Claude Code CLI) | Built-in chat sidebar |
-| **Interaction** | Command-driven workflows | Conversational AI |
-| **Data Context** | File parsing (CSV/TSV/JSON) | Live IDE state access |
-| **Use Case** | Specific data science tasks | General coding assistance |
-| **Best For** | Structured workflows | Exploratory conversations |
-| **Provider** | Claude Code only | Claude API + GitHub Copilot |
+| **Best For** | Specific data science tasks | Conversational coding help |
+| **Interaction** | Command-driven workflows | Chat sidebar |
+| **Data Context** | File parsing (CSV/TSV/JSON) | Live IDE state |
+| **Authentication** | Subscription or API key | API only |
 
-**Recommendation**: Use **both** together:
-- **Positron Assistant** for conversational help and agent mode
-- **Claude Studio** for specific tasks like "explain this code" or "analyze this CSV"
-
----
-
-## 🧪 Testing
-
-The extension includes a comprehensive test suite with 100% coverage of the DataContextProvider.
-
-### Run Tests
-
-```bash
-# Install dependencies
-npm install
-
-# Run all tests
-npm test
-
-# Watch mode during development
-npm run watch
-```
-
-### Test Coverage
-
-- **45 tests** covering:
-  - CSV/TSV/JSON file parsing
-  - Type inference and date detection
-  - Data formatting
-  - Cache management
-  - Edge cases
-
-Results: **45 passing (11ms), 0 failing**
-
-See [src/test/README.md](src/test/README.md) for detailed test documentation.
-
----
-
-## 🏗️ Architecture
-
-### Components
-
-```
-claude-studio/
-├── src/
-│   ├── extension.ts           # Extension activation & commands
-│   ├── claude/
-│   │   ├── claudeManager.ts   # Claude Code lifecycle management
-│   │   ├── claudeAPI.ts       # Subprocess communication
-│   │   └── claudeAuth.ts      # Secure API key storage
-│   ├── providers/
-│   │   └── dataContext.ts     # Data file parsing & analysis
-│   ├── commands/
-│   │   └── index.ts           # Command implementations
-│   └── utils/
-│       ├── config.ts          # Configuration management
-│       └── error.ts           # Error handling
-└── test/
-    ├── suite/
-    │   └── dataContext.test.ts  # Unit tests
-    └── fixtures/                # Test data files
-```
-
-### Key Features
-
-- **Terminal Integration**: Runs Claude Code in dedicated terminal with environment variables
-- **Smart Data Parsing**: Infers types (int, float, string, datetime, bool) from data files
-- **Language Detection**: Automatically detects Python, R, JavaScript/TypeScript
-- **Error Intelligence**: Integrates with Positron's language servers (Pyright, etc.)
-- **Secure Storage**: API keys stored in VS Code's secure globalState
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/shandley/claude-studio.git
-cd claude-studio
-
-# Install dependencies
-npm install
-
-# Compile TypeScript
-npm run compile
-
-# Run tests
-npm test
-
-# Watch mode for development
-npm run watch
-```
-
-### Adding Tests
-
-See [src/test/README.md](src/test/README.md) for testing guidelines.
-
----
-
-## 📝 Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
-
-### Latest Release: v0.2.0
-
-- ✅ Added comprehensive unit test suite (45 tests)
-- ✅ Fixed type inference bug (booleans vs numbers)
-- ✅ Complete test infrastructure with Mocha + Chai
-- ✅ Test fixtures and documentation
+**Recommendation**: Use both together for the best experience!
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Common Issues
-
-**Q: "Claude Code is not installed"**
+**Claude Code not installed**:
 ```bash
-# Install Claude Code CLI
 npm install -g @anthropic-ai/claude-code
-# Verify installation
-claude --version
+claude --version  # Verify
 ```
 
-**Q: Extension not loading**
-- Check Positron version (1.41.0+)
-- Restart Positron
-- Check Output → Claude Studio for errors
+**Authentication issues**:
+- Subscription: Run `claude login` in terminal
+- API Key: Run "Claude Studio: Configure Authentication" → "API Key"
+- Check **Output → Claude Studio** for detailed logs
 
-**Q: API key errors**
-- Run "Claude Studio: Configure API Key"
-- Verify key at https://console.anthropic.com/
-- Check Output → Claude Studio for details
+**Extension not loading**:
+- Requires VS Code/Positron 1.41.0+
+- Restart after installation
+- Check **Output → Claude Studio** for errors
 
-**Q: Tests failing**
-- Ensure VS Code test environment is downloaded
-- Run: `npm install`
-- Run: `npm test`
-
-### Enable Debug Logging
-
+**Enable debug mode**:
 ```json
 {
   "claude-studio.debug": true
 }
 ```
 
-Check **Output → Claude Studio** for detailed logs.
+---
+
+## 📝 What's New
+
+### v0.7.0 - Claude Subscription Support
+- ✅ Use Claude Pro/Max subscriptions (no API costs!)
+- ✅ New authentication chooser (subscription vs API key)
+- ✅ OAuth login flow for subscribers
+- ✅ Backward compatible with API keys
+
+### Previous Features
+- Plot improvement suggestions
+- Visualization code generation (6 chart types)
+- Statistical test recommendations
+- Status bar integration
+- Comprehensive test suite (45 tests)
+
+See [CHANGELOG.md](CHANGELOG.md) for full history.
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+**Development**:
+```bash
+git clone https://github.com/shandley/claude-studio.git
+cd claude-studio
+npm install
+npm run watch  # Auto-compile on changes
+npm test       # Run tests
+```
 
 ---
 
 ## 📄 License
 
-This extension is licensed under the [Elastic License 2.0](LICENSE).
+[Elastic License 2.0](LICENSE)
 
-**Note**: This extension requires the Claude Code CLI and Anthropic API, which have their own terms of service.
+This extension uses Claude Code CLI and Anthropic's services, which have their own terms.
 
 ---
 
@@ -407,25 +281,9 @@ This extension is licensed under the [Elastic License 2.0](LICENSE).
 
 - **Repository**: https://github.com/shandley/claude-studio
 - **Issues**: https://github.com/shandley/claude-studio/issues
-- **Positron IDE**: https://github.com/posit-dev/positron
-- **Claude Code Docs**: https://docs.anthropic.com/en/docs/claude-code
-- **Anthropic API**: https://console.anthropic.com/
+- **Claude Code**: https://docs.anthropic.com/en/docs/claude-code
+- **Anthropic Console**: https://console.anthropic.com/
 
 ---
 
-## 🙏 Acknowledgments
-
-- Built for [Positron IDE](https://github.com/posit-dev/positron) by Posit PBC
-- Powered by [Claude Code](https://www.anthropic.com/claude) from Anthropic
-- Inspired by the data science community's need for AI-native tools
-
----
-
-## 📧 Support
-
-- **Issues**: [GitHub Issues](https://github.com/shandley/claude-studio/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/shandley/claude-studio/discussions)
-
----
-
-**Made with ❤️ for data scientists, by data scientists**
+**Made for data scientists, by data scientists** 🧬📊🔬

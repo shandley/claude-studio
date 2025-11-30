@@ -27,7 +27,7 @@ export class ClaudeManager {
                     'Install',
                     'Cancel'
                 );
-                
+
                 if (install === 'Install') {
                     await this.installClaude();
                 } else {
@@ -35,15 +35,27 @@ export class ClaudeManager {
                 }
             }
 
-            // Get API key from secure storage
-            const apiKey = await this.authManager.getApiKey();
-            if (!apiKey) {
-                await this.authManager.promptForApiKey();
+            // Check authentication based on selected method
+            const isAuthenticated = await this.authManager.isAuthenticated();
+            if (!isAuthenticated) {
+                const authMethod = this.authManager.getAuthMethod();
+
+                if (authMethod === 'api-key') {
+                    await this.authManager.promptForApiKey();
+                } else {
+                    await this.authManager.loginWithSubscription();
+                }
                 return false;
             }
 
-            // Initialize Claude API
-            this.claudeAPI = new ClaudeAPI(apiKey);
+            // Initialize Claude API only if using API key method
+            const authMethod = this.authManager.getAuthMethod();
+            if (authMethod === 'api-key') {
+                const apiKey = await this.authManager.getApiKey();
+                if (apiKey) {
+                    this.claudeAPI = new ClaudeAPI(apiKey);
+                }
+            }
 
             this.isInitialized = true;
             this.log('Claude Manager initialized successfully');
@@ -63,28 +75,41 @@ export class ClaudeManager {
         }
 
         try {
-            // Get API key
-            const apiKey = await this.authManager.getApiKey();
-            if (!apiKey) {
-                throw new ClaudeError('No API key configured', 'AUTH_REQUIRED');
-            }
+            const authMethod = this.authManager.getAuthMethod();
 
-            // Create a new terminal for Claude
-            this.terminal = vscode.window.createTerminal({
-                name: 'Claude Studio',
-                env: {
-                    ANTHROPIC_API_KEY: apiKey
+            // Create terminal with or without API key based on auth method
+            if (authMethod === 'api-key') {
+                const apiKey = await this.authManager.getApiKey();
+                if (!apiKey) {
+                    throw new ClaudeError('No API key configured', 'AUTH_REQUIRED');
                 }
-            });
+
+                // Create terminal with API key in environment
+                this.terminal = vscode.window.createTerminal({
+                    name: 'Claude Studio',
+                    env: {
+                        ANTHROPIC_API_KEY: apiKey
+                    }
+                });
+
+                this.log('Claude Code started with API key authentication');
+            } else {
+                // Create terminal without setting API key - use subscription auth
+                this.terminal = vscode.window.createTerminal({
+                    name: 'Claude Studio'
+                });
+
+                this.log('Claude Code started with subscription authentication');
+            }
 
             // Show the terminal
             this.terminal.show();
 
             // Start Claude Code in the terminal
             this.terminal.sendText('claude');
-            
-            this.log('Claude Code started successfully');
-            vscode.window.showInformationMessage('Claude Studio is ready!');
+
+            const authMethodLabel = authMethod === 'api-key' ? 'API Key' : 'Pro/Max Subscription';
+            vscode.window.showInformationMessage(`Claude Studio is ready! (Using ${authMethodLabel})`);
         } catch (error) {
             this.handleError('Failed to start Claude', error);
         }

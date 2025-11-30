@@ -5,14 +5,15 @@
 Standalone VS Code/Positron extension integrating Claude Code CLI for data science workflows. Provides code assistance, data analysis, and documentation generation.
 
 **Repository**: https://github.com/shandley/claude-studio
-**Version**: v0.6.0
+**Version**: v0.7.0
 **License**: Elastic License 2.0
 
 ## Current Status
 
-**Completed Features (v0.1.0 - v0.6.0)**:
+**Completed Features (v0.1.0 - v0.7.0)**:
 - Core Claude Code CLI integration via terminal
-- Secure API key storage (VS Code globalState)
+- **Dual authentication support**: API key OR Pro/Max subscription (default: subscription)
+- Secure API key storage (VS Code globalState) - only when using API key mode
 - Data file parsing (CSV/TSV/JSON) with type inference
 - Code explanation and documentation generation
 - Language-aware features (Python, R, JavaScript/TypeScript)
@@ -43,7 +44,7 @@ src/
 ├── claude/
 │   ├── claudeManager.ts      # Process lifecycle management
 │   ├── claudeAPI.ts          # Subprocess communication
-│   └── claudeAuth.ts         # Secure API key storage
+│   └── claudeAuth.ts         # Authentication (API key or subscription)
 ├── providers/
 │   └── dataContext.ts        # CSV/TSV/JSON parsing, type inference
 ├── commands/
@@ -260,8 +261,8 @@ Users can customize via Settings → Extensions → Claude Studio:
 
 **Core Components**:
 - `src/extension.ts` - Extension activation, command registration
-- `src/claude/claudeManager.ts` - Process lifecycle (lines 20-55: initialize, 57-91: startClaude)
-- `src/claude/claudeAuth.ts` - API key management (lines 49-75: promptForApiKey)
+- `src/claude/claudeManager.ts` - Process lifecycle (lines 20-67: initialize, 69-116: startClaude)
+- `src/claude/claudeAuth.ts` - Authentication management (lines 142-179: configureAuth, 210-232: loginWithSubscription)
 - `src/providers/dataContext.ts` - Data parsing (line 218: type inference)
 - `src/providers/statisticalAnalyzer.ts` - Statistical test recommendations
 - `src/providers/visualizationGenerator.ts` - Visualization code generation
