@@ -5,6 +5,15 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2025-11-29
+
+### Fixed
+- **Subscription Login Flow**: Now runs `claude login` directly instead of showing commented instructions
+  - Changed button text from "Open Terminal" to "Login Now" for clarity
+  - Removed problematic shell comments that caused zsh errors
+  - Simplified UX - one click to start browser authentication
+  - Fixes issue where terminal showed `# claude login` as text instead of running the command
+
 ## [0.7.0] - 2025-11-29
 
 ### Added
