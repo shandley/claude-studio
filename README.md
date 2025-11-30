@@ -3,7 +3,7 @@
 **AI-enhanced data science development with Claude Code integration**
 
 [![License](https://img.shields.io/badge/license-Elastic--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.7.0-green.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-0.7.2-green.svg)](package.json)
 [![Build](https://github.com/shandley/claude-studio/actions/workflows/build.yml/badge.svg)](https://github.com/shandley/claude-studio/actions/workflows/build.yml)
 
 Claude Studio is a VS Code/Positron extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science workflow. Get intelligent code assistance, data analysis, and documentation features designed for researchers, data scientists, and analysts.
@@ -236,6 +236,11 @@ claude --version  # Verify
 ---
 
 ## 📝 What's New
+
+### v0.7.2 - Refined Authentication UX
+- ✅ Simplified subscription authentication (copy-to-clipboard approach)
+- ✅ "I'm Already Logged In" button for users who completed `claude login`
+- ✅ Treats `claude login` as prerequisite for cleaner, more reliable setup
 
 ### v0.7.0 - Claude Subscription Support
 - ✅ Use Claude Pro/Max subscriptions (no API costs!)

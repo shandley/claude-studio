@@ -5,6 +5,25 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.2] - 2025-11-29
+
+### Changed
+- **Refined Subscription Authentication UX**
+  - Authentication flow now treats `claude login` as a prerequisite step (one-time global setup)
+  - Added "Copy Command" button to easily copy `claude login` to clipboard
+  - Added "I'm Already Logged In" button for users who completed authentication
+  - Removed terminal command injection approach (avoids shell compatibility issues)
+  - Extension now detects existing authentication and guides appropriately
+
+### Documentation
+- Updated all guides to emphasize `claude login` as prerequisite in installation steps
+- Clearer instructions in README.md, GETTING_STARTED.md, and SHARE_WITH_COLLEAGUES.md
+- Authentication section now front and center in all documentation
+
+### Technical
+- Simplified authentication code - more reliable and maintainable
+- Better alignment with how Claude Code CLI authentication actually works
+
 ## [0.7.1] - 2025-11-29
 
 ### Changed

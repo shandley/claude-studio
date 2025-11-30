@@ -4,7 +4,7 @@ Hi! Thanks for helping test Claude Studio. This guide will get you up and runnin
 
 ## 📥 What You Need
 
-1. **Installation File**: `claude-studio-0.7.0.vsix` (included)
+1. **Installation File**: `claude-studio-0.7.2.vsix` (included)
 2. **VS Code or Positron** (version 1.41.0+)
 3. **Claude Pro/Max subscription** OR **Anthropic API key**
 
@@ -33,7 +33,7 @@ claude login
 1. Open VS Code/Positron
 2. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
 3. Type: "Install from VSIX"
-4. Select `claude-studio-0.7.1.vsix`
+4. Select `claude-studio-0.7.2.vsix`
 5. Restart when prompted
 
 ### Step 3: Start Testing
@@ -215,7 +215,7 @@ After testing, please share:
 ## 🎁 Included Files
 
 ```
-claude-studio-0.7.0.vsix              # Extension installer
+claude-studio-0.7.2.vsix              # Extension installer
 GETTING_STARTED.md                    # Detailed tutorial
 examples/
   ├── README.md                       # Examples overview
@@ -272,4 +272,4 @@ Your feedback helps make Claude Studio better for the entire data science commun
 
 ---
 
-**Version**: 0.7.0 | **Tester Guide** | Last Updated: 2025-11-29
+**Version**: 0.7.2 | **Tester Guide** | Last Updated: 2025-11-29

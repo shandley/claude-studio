@@ -5,12 +5,12 @@
 Standalone VS Code/Positron extension integrating Claude Code CLI for data science workflows. Provides code assistance, data analysis, and documentation generation.
 
 **Repository**: https://github.com/shandley/claude-studio
-**Version**: v0.7.0
+**Version**: v0.7.2
 **License**: Elastic License 2.0
 
 ## Current Status
 
-**Completed Features (v0.1.0 - v0.7.0)**:
+**Completed Features (v0.1.0 - v0.7.2)**:
 - Core Claude Code CLI integration via terminal
 - **Dual authentication support**: API key OR Pro/Max subscription (default: subscription)
 - Secure API key storage (VS Code globalState) - only when using API key mode
@@ -98,7 +98,7 @@ npm test
 ### Building
 
 ```bash
-npm run package  # Creates claude-studio-0.6.0.vsix
+npm run package  # Creates claude-studio-0.7.2.vsix
 ```
 
 ### Manual Testing in Positron
