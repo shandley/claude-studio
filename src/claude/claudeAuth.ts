@@ -213,23 +213,21 @@ export class ClaudeAuthManager {
     async loginWithSubscription(): Promise<void> {
         const message = await vscode.window.showInformationMessage(
             'To use Claude Studio with your Pro/Max subscription, you need to login to Claude Code.\n\n' +
-            'A terminal will open where you can run "claude login" to authenticate.',
-            'Open Terminal',
+            'Click "Login Now" to authenticate via your browser.',
+            'Login Now',
             'Cancel'
         );
 
-        if (message === 'Open Terminal') {
+        if (message === 'Login Now') {
             const terminal = vscode.window.createTerminal('Claude Login');
             terminal.show();
-            terminal.sendText('echo "Run: claude login"');
-            terminal.sendText('echo "After logging in, restart Claude Studio"');
-            terminal.sendText('echo ""');
-            terminal.sendText('# Uncomment the line below to start the login process:');
-            terminal.sendText('# claude login');
+
+            // Run claude login directly
+            terminal.sendText('claude login');
 
             vscode.window.showInformationMessage(
-                'Please run "claude login" in the terminal and follow the prompts. ' +
-                'After successful login, close and restart Claude Studio.'
+                'Follow the authentication prompts in your browser. ' +
+                'After successful login, you can start using Claude Studio!'
             );
         }
     }
