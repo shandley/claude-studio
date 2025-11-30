@@ -1,0 +1,42 @@
+# Build outputs
+out/test/**
+src/**
+.vscode-test/**
+
+# Development files
+.vscode/**
+.gitignore
+.github/**
+tsconfig.json
+scripts/**
+
+# Documentation (keep in package)
+# README.md
+# CHANGELOG.md
+# LICENSE.txt
+# GETTING_STARTED.md
+# SHARE_WITH_COLLEAGUES.md
+
+# Test files
+src/test/**
+*.test.ts
+
+# Source maps
+**/*.map
+
+# Node modules
+node_modules/**
+
+# Misc
+.DS_Store
+*.vsix
+npm-debug.log
+.eslintrc.json
+.prettierrc
+
+# Development guides (not needed in package)
+IMPLEMENTATION_PLAN.md
+PHASE_2_TEST_GUIDE.md
+SETUP.md
+CONTRIBUTING.md
+CLAUDE.md
