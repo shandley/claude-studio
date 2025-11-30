@@ -9,9 +9,14 @@ Welcome! This guide will walk you through all of Claude Studio's features using 
 Before starting, make sure you have:
 
 1. ✅ **VS Code or Positron** installed (version 1.41.0+)
-2. ✅ **Claude Studio extension** installed (see [README.md](README.md))
-3. ✅ **Claude Code CLI** installed (`npm install -g @anthropic-ai/claude-code`)
-4. ✅ **Authentication** configured (Pro/Max subscription or API key)
+2. ✅ **Claude Code CLI** installed AND authenticated
+   ```bash
+   npm install -g @anthropic-ai/claude-code
+   claude login  # One-time setup for Pro/Max users
+   ```
+3. ✅ **Claude Studio extension** installed (see [README.md](README.md))
+
+**Note**: If you have Claude Pro/Max, the `claude login` step is a one-time setup that works globally. You're likely already logged in if you use Claude Code elsewhere.
 
 ---
 
@@ -25,22 +30,24 @@ claude --version
 # Should show: 2.0.x (Claude Code)
 ```
 
-### Configure Authentication
+### Verify Authentication
 
-**Option 1: Claude Pro/Max Subscription (Recommended)**
-```
-1. Cmd+Shift+P → "Claude Studio: Configure Authentication"
-2. Select "Pro/Max Subscription"
-3. Run `claude login` in the terminal
-4. Complete browser authentication
+If you already ran `claude login` (recommended during installation), you're done!
+
+**Check your authentication:**
+```bash
+# In any terminal
+claude --version
+# If this works, you're authenticated
 ```
 
-**Option 2: API Key**
+**If not yet authenticated:**
+```bash
+# In your system terminal (one-time setup)
+claude login
 ```
-1. Cmd+Shift+P → "Claude Studio: Configure Authentication"
-2. Select "API Key"
-3. Enter your API key from console.anthropic.com
-```
+
+The extension will automatically use your subscription. No additional configuration needed!
 
 ### Start Claude Studio
 

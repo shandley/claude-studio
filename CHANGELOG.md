@@ -7,12 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.1] - 2025-11-29
 
+### Changed
+- **Simplified Subscription Authentication Flow**
+  - Assumes users run `claude login` as a prerequisite (one-time global setup)
+  - Extension now detects if user is already authenticated
+  - Shows helpful instructions with "Copy Command" option if not authenticated
+  - Includes "I'm Already Logged In" button for users who completed setup
+  - Removed complex in-extension terminal login attempts that caused issues
+
 ### Fixed
-- **Subscription Login Flow**: Now runs `claude login` directly instead of showing commented instructions
-  - Changed button text from "Open Terminal" to "Login Now" for clarity
-  - Removed problematic shell comments that caused zsh errors
-  - Simplified UX - one click to start browser authentication
-  - Fixes issue where terminal showed `# claude login` as text instead of running the command
+- Fixed subscription login showing shell comments instead of running commands
+- Fixed zsh compatibility issues with terminal commands
+- Improved authentication detection to check for existing Claude login
+- Updated all documentation to emphasize `claude login` as prerequisite step
+
+### Documentation
+- Updated README.md to list `claude login` in installation steps
+- Updated GETTING_STARTED.md to treat authentication as prerequisite
+- Updated SHARE_WITH_COLLEAGUES.md with clearer setup flow
+- All guides now emphasize one-time global setup approach
 
 ## [0.7.0] - 2025-11-29
 

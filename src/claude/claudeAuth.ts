@@ -148,16 +148,16 @@ export class ClaudeAuthManager {
 
         const methodOptions: AuthMethodOption[] = [
             {
-                label: '$(key) API Key',
-                description: 'Use Anthropic API key (pay-per-use)',
-                detail: currentMethod === 'api-key' ? 'Currently selected' : 'Charges per token usage',
-                method: 'api-key' as AuthMethod
-            },
-            {
                 label: '$(verified) Pro/Max Subscription',
                 description: 'Use Claude Pro or Max subscription (included usage)',
-                detail: currentMethod === 'subscription' ? 'Currently selected' : 'Requires active Pro/Max subscription',
+                detail: currentMethod === 'subscription' ? '✓ Currently selected - No API costs!' : 'Requires one-time setup: claude login',
                 method: 'subscription' as AuthMethod
+            },
+            {
+                label: '$(key) API Key',
+                description: 'Use Anthropic API key (pay-per-use)',
+                detail: currentMethod === 'api-key' ? '✓ Currently selected' : 'Charges per token usage',
+                method: 'api-key' as AuthMethod
             }
         ];
 
@@ -174,7 +174,16 @@ export class ClaudeAuthManager {
         if (selection.method === 'api-key') {
             await this.configureApiKey();
         } else {
-            await this.loginWithSubscription();
+            // Check if they're likely already authenticated
+            const hasAuth = await this.hasSubscriptionAuth();
+            if (hasAuth) {
+                vscode.window.showInformationMessage(
+                    '✓ Subscription authentication detected! You\'re all set. ' +
+                    'Start Claude Studio to begin using it.'
+                );
+            } else {
+                await this.loginWithSubscription();
+            }
         }
     }
 
@@ -208,27 +217,33 @@ export class ClaudeAuthManager {
     }
 
     /**
-     * Login with Claude Pro/Max subscription
+     * Show subscription setup instructions
      */
     async loginWithSubscription(): Promise<void> {
         const message = await vscode.window.showInformationMessage(
-            'To use Claude Studio with your Pro/Max subscription, you need to login to Claude Code.\n\n' +
-            'Click "Login Now" to authenticate via your browser.',
-            'Login Now',
-            'Cancel'
+            'Claude Pro/Max Subscription Setup\n\n' +
+            'To use Claude Studio with your subscription, you need to authenticate Claude Code (one-time setup).\n\n' +
+            '1. Open your system terminal\n' +
+            '2. Run: claude login\n' +
+            '3. Sign in via browser when prompted\n\n' +
+            'After authentication, Claude Studio will automatically use your subscription.',
+            'Copy Command',
+            'I\'m Already Logged In',
+            'Use API Key Instead'
         );
 
-        if (message === 'Login Now') {
-            const terminal = vscode.window.createTerminal('Claude Login');
-            terminal.show();
-
-            // Run claude login directly
-            terminal.sendText('claude login');
-
+        if (message === 'Copy Command') {
+            await vscode.env.clipboard.writeText('claude login');
             vscode.window.showInformationMessage(
-                'Follow the authentication prompts in your browser. ' +
-                'After successful login, you can start using Claude Studio!'
+                'Copied! Open your terminal, paste (Cmd+V), and press Enter. ' +
+                'Your browser will open for authentication.'
             );
+        } else if (message === 'I\'m Already Logged In') {
+            vscode.window.showInformationMessage(
+                'Great! Try starting Claude Studio now. It should automatically use your subscription.'
+            );
+        } else if (message === 'Use API Key Instead') {
+            await this.configureApiKey();
         }
     }
 

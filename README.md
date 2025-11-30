@@ -39,15 +39,24 @@ Claude Studio is a VS Code/Positron extension that integrates [Claude Code](http
 
 ## 📦 Installation
 
-### 1. Install Claude Code CLI
+### 1. Install and Authenticate Claude Code CLI
 
 ```bash
-# Via npm (recommended)
+# Install Claude Code
 npm install -g @anthropic-ai/claude-code
 
-# Or via Homebrew
-brew install claude-code
+# Authenticate (one-time setup)
+# Choose ONE of these methods:
+
+# Option A: Claude Pro/Max Subscription (Recommended - No API costs!)
+claude login
+# Your browser will open → Sign in with your Claude account
+
+# Option B: API Key (Pay-per-use)
+# Get key from console.anthropic.com, configure later in extension
 ```
+
+**Note**: If you have Claude Pro/Max, run `claude login` now. This is a one-time setup that works globally.
 
 ### 2. Install Extension
 
@@ -73,37 +82,28 @@ npm install && npm run package
 
 ### Authentication Setup
 
-**Choose your authentication method:**
+Claude Studio defaults to **Subscription mode** (no API costs if you ran `claude login` during installation).
 
-#### Option A: Claude Pro/Max Subscription (Recommended)
+**If you already ran `claude login` during installation:**
+- You're done! Just start using Claude Studio
+- Skip to "Start Using Claude Studio" below
 
-**Best for**: Users with Claude Pro ($20/month) or Max ($100-200/month) subscriptions
+**If you skipped the login step:**
 
 1. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
 2. Run: **"Claude Studio: Configure Authentication"**
 3. Select **"Pro/Max Subscription"**
-4. In the terminal that opens, run: `claude login`
-5. Follow the browser authentication flow
-6. Done! Uses your subscription's included usage
+4. Click **"Copy Command"**
+5. Open your system terminal
+6. Paste and run: `claude login`
+7. Sign in via browser
+8. Done!
 
-**Benefits**:
-- ✅ No additional API costs
-- ✅ Higher usage limits (5-20x more than API)
-- ✅ Same account as Claude.ai
-- ✅ Simple one-time login
-
-#### Option B: API Key
-
-**Best for**: Users without a subscription or preferring pay-per-use
-
-1. Get an API key from [Anthropic Console](https://console.anthropic.com/)
-2. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-3. Run: **"Claude Studio: Configure Authentication"**
-4. Select **"API Key"**
-5. Enter your API key (starts with `sk-ant-`)
-6. Key is stored securely
-
-**Note**: API usage charges apply separately from any subscription.
+**To use API Key instead:**
+1. Get key from [Anthropic Console](https://console.anthropic.com/)
+2. Run: **"Claude Studio: Configure Authentication"**
+3. Select **"API Key"**
+4. Enter your key (starts with `sk-ant-`)
 
 ### Start Using Claude Studio
 

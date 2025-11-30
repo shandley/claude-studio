@@ -10,41 +10,33 @@ Hi! Thanks for helping test Claude Studio. This guide will get you up and runnin
 
 ## 🚀 Quick Setup (5 minutes)
 
-### Step 1: Install Claude Code CLI
+### Step 1: Install and Authenticate Claude Code CLI
 
 ```bash
+# Install
 npm install -g @anthropic-ai/claude-code
+
+# Authenticate (choose ONE):
+
+# Option A: Claude Pro/Max (Recommended - $0 additional cost!)
+claude login
+# Browser opens → Sign in → Done!
+
+# Option B: API Key (Pay-per-use)
+# Skip for now, configure in extension later
 ```
 
-Verify: `claude --version` should show version 2.0.x
+**Verify:** `claude --version` should show version 2.0.x
 
 ### Step 2: Install Extension
 
 1. Open VS Code/Positron
 2. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
 3. Type: "Install from VSIX"
-4. Select `claude-studio-0.7.0.vsix`
+4. Select `claude-studio-0.7.1.vsix`
 5. Restart when prompted
 
-### Step 3: Configure Authentication
-
-**If you have Claude Pro/Max** (Recommended - saves money!):
-```
-1. Cmd+Shift+P → "Claude Studio: Configure Authentication"
-2. Select "Pro/Max Subscription"
-3. Run `claude login` in the terminal that opens
-4. Complete authentication in browser
-```
-
-**If you're using an API key**:
-```
-1. Get API key from https://console.anthropic.com/
-2. Cmd+Shift+P → "Claude Studio: Configure Authentication"
-3. Select "API Key"
-4. Enter your key (starts with sk-ant-)
-```
-
-### Step 4: Start Testing
+### Step 3: Start Testing
 
 ```
 Cmd+Shift+P → "Claude Studio: Start Claude Assistant"
