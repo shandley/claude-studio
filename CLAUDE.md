@@ -22,16 +22,25 @@ Standalone VS Code/Positron extension integrating Claude Code CLI for data scien
 - Statistical test recommendations (t-test, ANOVA, correlation, chi-square, regression)
 - Visualization code generation (6 chart types: histogram, scatter, box, bar, line, heatmap)
 - Plot improvement suggestions (select code, get AI recommendations)
+- **Positron Integration (v0.7.2)**:
+  - Automatic plot detection (R base graphics, ggplot2, matplotlib, seaborn)
+  - Rich plot context generation with data summaries
+  - Statistical summaries (min, mean, max) for numeric columns
+  - Data previews (first 3 rows of data frames)
+  - Missing value detection and reporting
+  - Column type analysis
+  - Plot type detection (scatter, histogram, box, etc.)
+  - Aesthetic extraction (colors, groupings, faceting)
 
 **Testing**: 45 passing tests, 100% DataContextProvider coverage
 
 **CI/CD**: Automated builds and releases via GitHub Actions
 
-**Remaining Features**:
-- Research documentation generation
+**Positron Features**: Plot detection works in Positron only (gracefully degrades in VS Code)
 
 **Future**:
-- Inline code suggestions
+- Living session context file (auto-updated .claude/session-context.md)
+- Plot iteration workflow (before/after comparisons)
 - Enhanced terminal integration
 
 ## Architecture

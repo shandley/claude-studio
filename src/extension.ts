@@ -7,12 +7,18 @@ import { ConfigManager } from './utils/config';
 import { DataContextProvider } from './providers/dataContext';
 import { ClaudeCommands } from './commands/index';
 import { StatusBarManager, ClaudeStatus } from './ui/statusBar';
+import { PositronIntegration } from './features/positronIntegration';
+import { PlotWatcher } from './features/plotWatcher';
+import { SessionMonitor } from './features/sessionMonitor';
 
 let claudeManager: ClaudeManager;
 let authManager: ClaudeAuthManager;
 let dataProvider: DataContextProvider;
 let outputChannel: vscode.OutputChannel;
 let statusBarManager: StatusBarManager;
+let positronIntegration: PositronIntegration | undefined;
+let plotWatcher: PlotWatcher | undefined;
+let sessionMonitor: SessionMonitor | undefined;
 
 export async function activate(context: vscode.ExtensionContext) {
     console.log('Claude Studio extension is now active!');
@@ -29,6 +35,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // Initialize status bar with current state
     await updateStatusBar();
+
+    // Initialize Positron features if available
+    await initializePositronFeatures(context);
 
     // Register commands
     registerCommands(context);
@@ -290,6 +299,106 @@ async function updateStatusBar(): Promise<void> {
     }
 }
 
+/**
+ * Initialize Positron-specific features if running in Positron
+ */
+async function initializePositronFeatures(context: vscode.ExtensionContext): Promise<void> {
+    // Check if running in Positron
+    positronIntegration = new PositronIntegration(context);
+
+    if (!positronIntegration.isAvailable()) {
+        outputChannel.appendLine('ℹ️  Running in VS Code - Positron features disabled');
+        return;
+    }
+
+    outputChannel.appendLine('✅ Positron detected - Enabling advanced features');
+
+    try {
+        // Initialize PlotWatcher with ClaudeManager
+        plotWatcher = new PlotWatcher(context, claudeManager);
+        await plotWatcher.activate();
+        outputChannel.appendLine('✅ Plot Watcher activated');
+
+        // TEMPORARILY DISABLED: SessionMonitor interferes with Positron's variable panel
+        // sessionMonitor = new SessionMonitor(context);
+        // await sessionMonitor.activate();
+        // outputChannel.appendLine('✅ Session Monitor activated');
+
+        // Register Positron-specific commands
+        registerPositronCommands(context);
+
+        outputChannel.appendLine('ℹ️  Positron features enabled (Plot detection active)');
+    } catch (error) {
+        outputChannel.appendLine(`⚠️  Error initializing Positron features: ${error}`);
+        ErrorHandler.handle(error, 'Initialize Positron Features');
+    }
+}
+
+/**
+ * Register Positron-specific commands
+ */
+function registerPositronCommands(context: vscode.ExtensionContext): void {
+    // Show session context command
+    const showSessionContextCommand = vscode.commands.registerCommand(
+        'claude-studio.showSessionContext',
+        async () => {
+            if (sessionMonitor) {
+                await sessionMonitor.showSessionContext();
+            }
+        }
+    );
+
+    // Improve current plot command
+    const improvePlotCommand = vscode.commands.registerCommand(
+        'claude-studio.improveCurrentPlot',
+        async () => {
+            if (!plotWatcher) {
+                vscode.window.showWarningMessage('Plot watcher not available (Positron only)');
+                return;
+            }
+
+            vscode.window.showInformationMessage(
+                'Create a plot in the console, and Claude Studio will detect it automatically!'
+            );
+        }
+    );
+
+    // Get session variables command
+    const getSessionVarsCommand = vscode.commands.registerCommand(
+        'claude-studio.getSessionVariables',
+        async () => {
+            if (!positronIntegration || !positronIntegration.isAvailable()) {
+                vscode.window.showWarningMessage('Session variables not available (Positron only)');
+                return;
+            }
+
+            const variables = await positronIntegration.getSessionVariables();
+
+            if (variables.length === 0) {
+                vscode.window.showInformationMessage('No variables in current session');
+                return;
+            }
+
+            // Show in quick pick
+            const items = variables.map(v => ({
+                label: `$(symbol-variable) ${v.display_name}`,
+                description: v.display_type,
+                detail: v.display_value
+            }));
+
+            await vscode.window.showQuickPick(items, {
+                placeHolder: 'Session Variables'
+            });
+        }
+    );
+
+    context.subscriptions.push(
+        showSessionContextCommand,
+        improvePlotCommand,
+        getSessionVarsCommand
+    );
+}
+
 export function deactivate() {
     console.log('Claude Studio extension deactivated');
 
@@ -299,6 +408,14 @@ export function deactivate() {
 
     if (statusBarManager) {
         statusBarManager.dispose();
+    }
+
+    if (plotWatcher) {
+        plotWatcher.dispose();
+    }
+
+    if (sessionMonitor) {
+        sessionMonitor.dispose();
     }
 
     if (outputChannel) {

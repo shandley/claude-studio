@@ -5,6 +5,54 @@ All notable changes to the Claude Studio extension will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2025-12-01
+
+### Added
+- **Positron Integration**: Advanced features for Positron IDE users
+  - **Automatic Plot Detection**: Detects plot creation in R/Python console using `positron.ai.getCurrentPlotUri()`
+  - **Rich Plot Context Generation**: Generates comprehensive context files with data analysis
+  - **PlotWatcher** (`src/features/plotWatcher.ts`): Monitors R/Python runtime for plot creation
+    - Detects plotting code patterns (ggplot, plot(), plt.plot, sns., etc.)
+    - Shows notification when plot is created
+    - Integrates with ClaudeManager for improvement suggestions
+  - **PlotContextBuilder** (`src/features/plotContextBuilder.ts`): Generates detailed plot context
+    - Statistical summaries (min, mean, max) for numeric columns
+    - Data previews (first 3 rows of data frames)
+    - Missing value detection and reporting
+    - Column type analysis (numeric, factor, character)
+    - Plot type detection (scatter, histogram, box, etc.)
+    - Aesthetic extraction (color groupings, faceting)
+    - Direct data querying for built-in datasets (mtcars, iris, etc.)
+  - **PositronIntegration** (`src/features/positronIntegration.ts`): Detects Positron environment
+  - **SessionMonitor** (`src/features/sessionMonitor.ts`): Session state tracking (disabled due to performance)
+  - **Clipboard-based workflow**: Copies rich context prompt to clipboard for pasting into Claude terminal
+  - **Graceful degradation**: Works in VS Code without Positron features
+
+### Changed
+- **Extension** (`src/extension.ts`):
+  - Added `initializePositronFeatures()` function to conditionally enable Positron features
+  - Registered Positron-specific commands: `showSessionContext`, `improveCurrentPlot`, `getSessionVariables`
+  - Detects Positron environment and enables advanced features automatically
+- **Package** (`package.json`):
+  - Added new Positron-specific commands
+  - Updated version badge
+
+### Technical Details
+- Plot detection uses event-driven architecture (`onDidExecuteCode`, `onDidChangeForegroundSession`)
+- Direct data querying executes R/Python code via `session.execute()` with observer pattern
+- 500ms delay for plot rendering before URI capture
+- Context files saved to `.claude/plot-context-{timestamp}.md`
+- Supports R base graphics, ggplot2, matplotlib, seaborn, plotly
+
+### Documentation
+- **PLOT_DETECTION_RESEARCH.md**: Comprehensive research findings on plot detection approach
+- **POSITRON_APIS.md**: Documentation of Positron extension APIs
+- **POSITRON_INTEGRATION_SUMMARY.md**: Integration overview
+- **CLAUDE.md**: Updated with Positron integration architecture and features
+
+### Known Issues
+- SessionMonitor temporarily disabled due to performance interference with Positron's variable panel
+
 ## [0.7.2] - 2025-11-29
 
 ### Changed

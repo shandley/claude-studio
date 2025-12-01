@@ -3,7 +3,7 @@
 **AI-enhanced data science development with Claude Code integration**
 
 [![License](https://img.shields.io/badge/license-Elastic--2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.7.2-green.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-0.8.0-green.svg)](package.json)
 [![Build](https://github.com/shandley/claude-studio/actions/workflows/build.yml/badge.svg)](https://github.com/shandley/claude-studio/actions/workflows/build.yml)
 
 Claude Studio is a VS Code/Positron extension that integrates [Claude Code](https://docs.anthropic.com/en/docs/claude-code) directly into your data science workflow. Get intelligent code assistance, data analysis, and documentation features designed for researchers, data scientists, and analysts.
@@ -23,6 +23,17 @@ Claude Studio is a VS Code/Positron extension that integrates [Claude Code](http
 - **Visualization Code Generation**: Publication-ready plots (ggplot2, matplotlib/seaborn) for 6 chart types
 - **Plot Improvements**: Select plotting code, get AI-powered enhancement suggestions
 - **Smart Context**: Right-click data files for instant AI analysis recommendations
+
+### 🔬 **Positron Integration** (Positron IDE only)
+- **Automatic Plot Detection**: Detects when you create plots in R or Python console
+- **Rich Plot Context**: Generates detailed context files with:
+  - Statistical summaries (min, mean, max) for numeric columns
+  - Data previews (first 3 rows of data frames)
+  - Missing value detection and reporting
+  - Column type analysis
+  - Plot type detection and aesthetic extraction
+- **One-Click Improvements**: Notification appears when plot is created, click to get AI-powered suggestions
+- **Supports All Plot Libraries**: ggplot2, base R graphics, matplotlib, seaborn, plotly
 
 ### 💻 **Code Intelligence**
 - **Explain Code**: Detailed explanations with language context
@@ -236,6 +247,13 @@ claude --version  # Verify
 ---
 
 ## 📝 What's New
+
+### v0.8.0 - Positron Integration
+- ✅ Automatic plot detection in Positron IDE (R base graphics, ggplot2, matplotlib, seaborn)
+- ✅ Rich plot context generation with statistical summaries and data previews
+- ✅ One-click plot improvement workflow with comprehensive data analysis
+- ✅ Support for built-in datasets (mtcars, iris, etc.)
+- ✅ Graceful degradation - works in VS Code without Positron features
 
 ### v0.7.2 - Refined Authentication UX
 - ✅ Simplified subscription authentication (copy-to-clipboard approach)
